@@ -1,0 +1,156 @@
+--- ev4b_pristine/test_solver.py	2026-08-13 14:13:38
++++ ev4b/test_solver.py	2026-08-13 14:13:04
+@@ -13,7 +13,8 @@
+ 
+ import numpy as np
+ 
+-from solver import (SimConfig, simulate, reaction_exact, speed)
++from solver import (SimConfig, simulate, reaction_exact, speed,
++                    cav_density, transport_step, u_s_of_t)
+ 
+ HERE = Path(__file__).parent
+ 
+@@ -239,10 +240,133 @@
+         raised = True
+         print(f"  raised as expected: {e}")
+     assert raised, "CFL assertion did not fire"
++
++
++# --------------------------------------------------------------------------
++# 7. Capacity cap disabled: bit-identical to the uncapped scheme (E-V4b)
++# --------------------------------------------------------------------------
++
++def _ev4b_ref_cfg(**kw) -> SimConfig:
++    """A1 reference config of the E-V4b bit-identity check."""
++    d = dict(kappa_c=0.0307, kappa_r=0.0, u_xi=15.0,
++             q_in=2500.0 / 3600.0, dt=0.5, save_every=20)
++    d.update(kw)
++    return base_cfg(**d)
++
++
++def test_cap_disabled_bit_identical():
++    ref_path = HERE / "out" / "ev4b_ref_A1.npz"
++    res = simulate(_ev4b_ref_cfg(q_xi_max=None))
++    if not ref_path.exists():
++        np.savez(ref_path, f=res.f, s=res.s, N_s=res.N_s, omega=res.omega)
++        print(f"  NOTE: no stored reference -- created {ref_path.name} from "
++              "the current solver; rerun to check bit-stability")
++    ref = np.load(ref_path)
++    for name, arr in (("f", res.f), ("s", res.s),
++                      ("N_s", res.N_s), ("omega", res.omega)):
++        assert np.array_equal(ref[name], arr), \
++            f"{name} not bit-identical to the uncapped reference"
++    print("  q_xi_max=None: f, s, N_s, omega bit-identical to the saved "
++          "uncapped reference")
+ 
+ 
++# --------------------------------------------------------------------------
++# 8. Capacity cap: analytic steady moving bottleneck (E-V4b)
+ # --------------------------------------------------------------------------
+ 
++def test_cap_analytic_bottleneck():
++    """Pure-transport moving bottleneck vs the Delle Monache-Goatin steady
++    state: the upstream queue solves w (P - rho) - u_xi rho = omega_max on
++    the congested branch, rho_minus = (w P - omega_max) / (w + u_xi); the
++    road-frame flux on the queue side is q_minus = omega_max + u_xi
++    rho_minus; the queue tail is the RH shock between (rho_in, q_in) and
++    (rho_minus, q_minus).  NOTE: the capped face itself carries the WAKE
++    flux omega_max + u_xi rho_hat (its Godunov trace is the downstream free
++    state rho_hat, see transport_step); q_minus is measured on queue-
++    interior faces just upstream of the CAV cell."""
++    u_xi, q_xi = 15.0, 2000.0 / 3600.0
++    cfg = base_cfg(kappa_c=0.0, kappa_r=0.0, u_xi=u_xi, dt=0.5,
++                   save_every=20, q_xi_max=q_xi)
++    sigma_xi = cfg.beta * W * P / (V_F + W)
++    omega_max = max(q_xi - u_xi * sigma_xi, 0.0)
++    rho_minus = (W * P - omega_max) / (W + u_xi)
++    q_minus = omega_max + u_xi * rho_minus       # = W (P - rho_minus)
++    rho_in = cfg.q_in / V_F
++    z = (q_minus - cfg.q_in) / (rho_minus - rho_in)
++
++    res = simulate(cfg)
++
++    # (a) upstream queue density, x in [x_cav - 1000, x_cav - 200] at t = 700
++    i700 = int(np.argmin(np.abs(res.t - 700.0)))
++    xc = res.x_cav[i700]
++    rho7 = res.a[i700] + res.f[i700] + res.s[i700]
++    m = (res.x >= xc - 1000.0) & (res.x <= xc - 200.0)
++    rho_sim = rho7[m].mean()
++    rel_rho = abs(rho_sim - rho_minus) / rho_minus
++    print(f"  rho_minus analytic {rho_minus:.6f} veh/m "
++          f"({rho_minus * 1000:.2f} veh/km), simulated {rho_sim:.6f} "
++          f"({rho_sim * 1000:.2f} veh/km), {100 * rel_rho:.2f}% off")
++    assert rel_rho < 0.05, "upstream queue density off the analytic state"
++
++    # (b) road-frame flux past the CAV on the queue side: telescope the
++    # interface fluxes of one transport step from the saved t = 700 state
++    # and average the three queue-interior faces upstream of the CAV cell
++    f7, s7 = res.f[i700].copy(), res.s[i700].copy()
++    a7 = cav_density(cfg, 700.0, f7.size)
++    fn, sn, q_adm, _ = transport_step(f7, s7, a7, cfg.v_f,
++                                      u_s_of_t(cfg, 700.0), cfg, t=700.0)
++    lam = cfg.dt / cfg.dx
++    F = np.empty(f7.size + 1)
++    F[0] = q_adm
++    F[1:] = q_adm - np.cumsum((fn - f7) + (sn - s7)) / lam
++    j = int(xc / cfg.dx)
++    q_queue = F[j - 3:j].mean()
++    rel_q = abs(q_queue - q_minus) / q_minus
++    print(f"  queue-side flux {q_queue:.6f} veh/s vs omega_max + u rho_minus"
++          f" = {q_minus:.6f} ({100 * rel_q:.2f}% off); capped face "
++          f"{F[j + 1]:.6f} = wake flux")
++    assert rel_q < 0.03, "queue-side flux off omega_max + u_xi rho_minus"
++
++    # (c) queue-tail shock speed over t in [350, 650]
++    sel = np.where((res.t >= 350.0) & (res.t <= 650.0))[0]
++    tails = []
++    for i in sel:
++        r = res.a[i] + res.f[i] + res.s[i]
++        ks = np.where(r > 0.6 * rho_minus)[0]
++        tails.append(res.x[ks[0]] if ks.size else np.nan)
++    tails = np.asarray(tails)
++    ok = np.isfinite(tails)
++    assert ok.sum() > 10, "queue tail not detectable"
++    slope = np.polyfit(res.t[sel][ok], tails[ok], 1)[0]
++    rel_z = abs(slope - z) / abs(z)
++    print(f"  tail shock {slope:.4f} m/s vs RH z = {z:.4f} m/s "
++          f"({100 * rel_z:.2f}% off)")
++    assert rel_z < 0.15, "queue-tail speed off the RH prediction"
++
++
++# --------------------------------------------------------------------------
++# 9. Capacity cap + reactions: invariants still hold (E-V4b)
++# --------------------------------------------------------------------------
++
++def test_cap_with_reactions_invariants():
++    kap = json.loads((HERE / "out" / "ev3_kappa.json").read_text())
++    kc = kap["A1_u15_q2500"]["kappa_cl_mod"][0]     # 0.0307
++    kr = kap["A1_u15_q2500"]["kappa_r_mod"][0]      # 0.0
++    res = simulate(_ev4b_ref_cfg(kappa_c=kc, kappa_r=kr,
++                                 q_xi_max=2000.0 / 3600.0))
++    balance = res.on_road + res.outflowed
++    rel = abs(res.injected - balance) / max(res.injected, 1.0)
++    rho = res.a + res.f + res.s
++    print(f"  kappa_c={kc:.4f}, kappa_r={kr:g}: ledger rel err {rel:.2e}, "
++          f"min f {res.f.min():.3e}, min s {res.s.min():.3e}, "
++          f"max rho {rho.max():.6f} (P = {P:.6f})")
++    assert rel < 1e-10, "mass ledger not closed with the cap active"
++    assert res.f.min() >= 0.0 and res.s.min() >= 0.0
++    assert rho.max() <= P + 1e-12, "rho exceeded jam density with the cap"
++
++
++# --------------------------------------------------------------------------
++
+ if __name__ == "__main__":
+     tests = [
+         ("conservation", test_conservation),
+@@ -251,6 +375,9 @@
+         ("Riemann shock RH speed", test_riemann_shock),
+         ("queue smoke", test_queue_smoke),
+         ("CFL assertion", test_cfl_assert),
++        ("cap disabled bit-identity", test_cap_disabled_bit_identical),
++        ("cap analytic bottleneck", test_cap_analytic_bottleneck),
++        ("cap + reactions invariants", test_cap_with_reactions_invariants),
+     ]
+     for name, fn in tests:
+         print(f"[{name}]")

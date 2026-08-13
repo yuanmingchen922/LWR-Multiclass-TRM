@@ -1,0 +1,87 @@
+--- ev4b_pristine/solver.py	2026-08-13 14:13:38
++++ ev4b/solver.py	2026-08-13 14:11:26
+@@ -100,6 +100,9 @@
+     save_every: int = 10          # save cadence [steps]
+     f0: np.ndarray | None = None  # optional initial f (default: empty road)
+     s0: np.ndarray | None = None  # optional initial s (default: empty road)
++    q_xi_max: float | None = None  # one-lane-blocked capacity [veh/s];
++    #                                None = capacity cap disabled (legacy)
++    beta: float = 0.5             # open-lane fraction of the blocked FD
+ 
+ 
+ @dataclass
+@@ -205,7 +208,8 @@
+ # Godunov/CTM transport substep (tex eqs. min-flux, transport-update)
+ # --------------------------------------------------------------------------
+ 
+-def transport_step(f, s, a, c_f: float, c_s: float, cfg: SimConfig):
++def transport_step(f, s, a, c_f: float, c_s: float, cfg: SimConfig,
++                   t: float | None = None):
+     """One conservative transport update of f and s.
+ 
+     Interior fluxes: F^m_{j+1/2} = pi_j^m min{D_{c_m}(rho_j),
+@@ -214,6 +218,31 @@
+     applied since a is prescribed).  Left boundary: pure-f inflow
+     F^f = min{q_in, S_{v_f}(rho_1)}, F^s = 0.  Right boundary: free outflow
+     F^m = pi^m D_{c_m}(rho_nx).
++
++    Moving-bottleneck capacity cap (Delle Monache--Goatin flux constraint):
++    when cfg.q_xi_max is not None, t is given, t in [t_slow, t_fast] and the
++    CAV is on the road, the flux past the CAV in its own frame is bounded,
++
++        F^f + F^s - u_cav rho_j <= omega_max,
++        omega_max = (q_xi_max - u_cav sigma_xi)_+,
++        sigma_xi  = beta w P / (v_f + w),
++
++    with sigma_xi the critical density of the one-lane-blocked flux Q_xi
++    (open-lane fraction beta) and u_cav = u_xi.  The bound is enforced at
++    the single interface j+1/2 (downstream face of the CAV cell j): the
++    violation test uses the CAV-cell traffic density f_j + s_j as the
++    upstream trace, and a binding constraint caps the face at the road-frame
++    flux of the free wake state the bottleneck emits,
++
++        cap_abs = omega_max + u_cav rho_hat,  rho_hat = omega_max/(v_f - u_cav)
++
++    (the Godunov trace at a constrained face is the downstream wake state;
++    capping at omega_max + u_cav rho_j with the cell average instead is
++    bistable on a fixed grid -- the cap inflates with the local density and
++    free flow never transitions to the congested branch, verified in the
++    E-V4b build).  Both class fluxes are scaled by the same factor, so the
++    update stays conservative.  With q_xi_max=None (default) the scheme is
++    bit-identical to the uncapped one.
+ 
+     Returns (f_new, s_new, q_admitted, q_out) with boundary fluxes in veh/s.
+     """
+@@ -238,6 +267,23 @@
+     F_f[-1] = pi_f[-1] * D_f[-1]
+     F_s[-1] = pi_s[-1] * D_s[-1]
+ 
++    if (cfg.q_xi_max is not None and t is not None
++            and cfg.t_slow <= t <= cfg.t_fast):
++        x_cav = cav_position(cfg, t)
++        u_cav = cfg.u_xi
++        if np.isfinite(x_cav) and u_cav < cfg.v_f:
++            j = min(int(x_cav / cfg.dx), nx - 1)   # cell containing x_cav
++            sigma_xi = cfg.beta * cfg.w * cfg.P / (cfg.v_f + cfg.w)
++            omega_max = max(cfg.q_xi_max - u_cav * sigma_xi, 0.0)
++            F_tot = F_f[j + 1] + F_s[j + 1]
++            if F_tot - u_cav * (f[j] + s[j]) > omega_max:   # constraint hit
++                rho_hat = omega_max / (cfg.v_f - u_cav)     # free wake state
++                cap_abs = omega_max + u_cav * rho_hat
++                if F_tot > cap_abs:
++                    scale = cap_abs / F_tot
++                    F_f[j + 1] *= scale
++                    F_s[j + 1] *= scale
++
+     f_new = f - lam * np.diff(F_f)
+     s_new = s - lam * np.diff(F_s)
+     return f_new, s_new, F_f[0], F_f[-1] + F_s[-1]
+@@ -287,7 +333,7 @@
+             _save(n)
+         u_s = u_s_of_t(cfg, t)          # frozen for the whole step
+         a = cav_density(cfg, t, nx)
+-        f, s, q_adm, q_out = transport_step(f, s, a, cfg.v_f, u_s, cfg)
++        f, s, q_adm, q_out = transport_step(f, s, a, cfg.v_f, u_s, cfg, t=t)
+         injected += q_adm * cfg.dt
+         denied += (cfg.q_in - q_adm) * cfg.dt
+         outflowed += q_out * cfg.dt

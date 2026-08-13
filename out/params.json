@@ -1,0 +1,24 @@
+{
+  "v_f_kmh": 100.56815544542175,
+  "v_f_ms": 27.935598734839374,
+  "w_kmh": 22.365515931883216,
+  "w_ms": 6.212643314412004,
+  "P_vehkm": 266.6666666666667,
+  "crit_density": 48.515085533649625,
+  "capacity": 4879.0726633960085,
+  "alt_P_free": {
+    "w_kmh": 6.458304606749398,
+    "P_vehkm": 754.1067934315142,
+    "rmse": 73.92428342660186
+  },
+  "tail_shock_rh": {
+    "n": 15,
+    "z_emp_median_kmh": 36.07219251336898,
+    "z_rh_median_kmh": 35.3391219316049,
+    "median_abs_diff_kmh": 1.2816443893702711
+  },
+  "n_cloud": 407667,
+  "n_congested": 53,
+  "C_steady": 0.15,
+  "source": "A=3 True files, steady updown upstream pts + field cloud"
+}
