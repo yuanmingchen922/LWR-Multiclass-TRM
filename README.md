@@ -14,8 +14,15 @@ macroscopic model reproduce **both** behaviors just by changing the two
 
 **The answer:** yes for the queue dynamics, and — after adding a bottleneck
 capacity constraint — the 54 km/h scenarios match SUMO's cumulative flow to
-within 7.5%. Along the way we learned exactly which two parts of the model need
-to change next (details below).
+within 7.5%. Better still, Step 8 shows the capacity constraint is not even
+needed: with field-calibrated coefficients, catch & release **on its own** beats
+the classical LWR + moving-bottleneck model on the density field in every
+54 km/h scenario.
+
+*Project focus (following Mladen's review): main results use the 54 km/h
+(u=15) scenarios — moving-bottleneck models are known to be weak at extreme
+speed differences; the stop-and-go analysis (Step 7) is kept for reference but
+on ice, since this data set contains no significant stop-and-go waves.*
 
 ---
 
@@ -109,6 +116,20 @@ statement of what a relaxation-time extension of the source would need to add.
 
 ![Wave amplitude and direction vs assertiveness](out/ev5/fig_waves_trend.png)
 
+**Step 8 — Catch & release as a native moving-bottleneck model (E6).**
+Following Mladen's suggestion, we dropped the capacity constraint and instead
+fitted (kappa_c, kappa_r) directly to the measured density field (fit at
+q=2500 veh/h, then transferred unchanged to q=2000). The native model beats
+the classical LWR+MB baseline on density-field RMSE in **all four** 54 km/h
+scenarios and keeps |e_s| <= 4.8%. The reason it can: inside its queue a stuck
+stream (s) and a free stream (f) coexist, so the aggregate state lies *inside*
+the flux function — the low-assertiveness two-stream regime that scalar LWR
+cannot express. Costs (reported honestly): overtaking flow is underpredicted,
+and at A=10 the fitted s is a modeling device rather than the literal caught
+population. See `E6_results.md`.
+
+![Data vs classical vs native catch & release](out/e6/fig_profiles_A1_u15_q2500.png)
+
 ---
 
 ## How to run
@@ -127,6 +148,7 @@ python3 ev4_compare.py --form lf --qxi 2000  # E-V4b capacity cap -> out/ev4b_q2
 python3 ev5_dispersion.py        # linear stability            -> out/ev5/
 python3 ev5_waves.py             # wave spectra of the data (--selftest available)
 python3 ev5_sim_vs_data.py       # model-vs-data spectra, same analysis box
+python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out/e6/
 ```
 
 ## File guide
@@ -151,6 +173,7 @@ python3 ev5_sim_vs_data.py       # model-vs-data spectra, same analysis box
 | `ev5_dispersion.py` | **E-V5 (model)**: dispersion relation Λ(k) of the calibrated model on both equilibrium branches in both smooth regimes; stability maps. |
 | `ev5_waves.py` | **E-V5 (data)**: 2D FFT wave spectra of the density fields (amplitude, propagation direction, dominant speed); includes a synthetic-wave self-test that gates the sign conventions. |
 | `ev5_sim_vs_data.py` | **E-V5 (closure)**: same-box spectral comparison of the simulated vs measured fields. |
+| `e6_native_mb.py` | **E6**: fits (κ_c, κ_r) to the measured density field and compares three models — classical LWR+MB (DM-G cap, κ=0), native catch & release (no cap), and the capped E-V4b variant — on heatmaps, profile snapshots with the f/s split, and all four metrics. |
 
 ### Tests and independent audits
 
@@ -169,6 +192,7 @@ python3 ev5_sim_vs_data.py       # model-vs-data spectra, same analysis box
 | `E1_EV3_results.md` | The κ table with confidence intervals, the A=1 vs A=10 contrast, and the identifiability discussion. |
 | `E_V4_results.md` | Baseline forward validation: what matches, what fails, and the case for the capacity constraint. |
 | `E_V4b_V5_results.md` | Capacity-cap results, the A-dependence of the bottleneck capacity, the dispersion theorem, the wave spectra, and the model-vs-data closure. |
+| `E6_results.md` | The native moving-bottleneck result: field-calibrated catch & release vs classical LWR+MB, the two-stream interpretation, and the honest trade-offs. |
 
 ### Outputs (`out/`)
 
@@ -180,6 +204,7 @@ python3 ev5_sim_vs_data.py       # model-vs-data spectra, same analysis box
 | `ev4/`, `ev4_af/` | Baseline comparison metrics and figures (two capture-law variants). |
 | `ev4b_q2000/`, `ev4b_q2440/` (+`_af`) | Capacity-capped comparison metrics and figures. |
 | `ev5/` | Dispersion summary + stability maps, wave-spectra summary + figures, model-vs-data spectra. |
+| `e6/` | Native-MB fit results, three-model metrics, heatmap and profile comparison figures. |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas
