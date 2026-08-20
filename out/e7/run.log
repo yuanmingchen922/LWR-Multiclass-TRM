@@ -1,0 +1,56 @@
+
+=== A1 C0: metric=rmse extra=None ===
+[grid 6x6] rmse=5.631 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] rmse=5.490 at kappa_c=1.781e-01 kappa_r=9.488e-03 extras={}
+[re-eval] dt=1: w1=177.938 rmse=5.490 | dt=0.5: w1=174.673 rmse=5.393 (78 sims total)
+[eval dt=0.5] W1=174.67 RMSE=5.39 e_s=-2.1% omega_err=-32.2% | d1=47.1 (super=False) d2_growth=500 m d3_band=True
+
+=== A1 C1: metric=w1 extra=None ===
+[grid 6x6] w1=168.346 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=162.500 at kappa_c=1.408e-01 kappa_r=9.276e-03 extras={}
+[re-eval] dt=1: w1=162.500 rmse=6.360 | dt=0.5: w1=162.608 rmse=6.342 (78 sims total)
+[eval dt=0.5] W1=162.61 RMSE=6.34 e_s=+10.1% omega_err=-20.3% | d1=53.9 (super=True) d2_growth=200 m d3_band=True
+
+=== A1 C2: metric=w1 extra={'gamma': (0.0, 1.0)} ===
+[grid 6x6] w1=201.899 at kappa_c=5.012e-02 kappa_r=1.000e-04 extras={'gamma': 0.5}
+[polish nfev=40] w1=169.933 at kappa_c=6.536e-02 kappa_r=4.542e-04 extras={'gamma': 0.6426809461210201}
+[re-eval] dt=1: w1=169.933 rmse=7.667 | dt=0.5: w1=169.449 rmse=7.547 (78 sims total)
+[eval dt=0.5] W1=169.45 RMSE=7.55 e_s=+3.2% omega_err=-21.8% | d1=60.1 (super=True) d2_growth=600 m d3_band=True
+
+=== A1 C3: metric=w1 extra={'ws_frac': (0.5, 1.0)} ===
+[grid 6x6] w1=157.744 at kappa_c=5.012e-02 kappa_r=5.012e-04 extras={'ws_frac': 0.75}
+[polish nfev=40] w1=148.196 at kappa_c=4.625e-02 kappa_r=5.681e-04 extras={'ws_frac': 0.5998151363168716}
+[re-eval] dt=1: w1=148.196 rmse=5.789 | dt=0.5: w1=147.095 rmse=5.736 (78 sims total)
+[eval dt=0.5] W1=147.09 RMSE=5.74 e_s=+3.0% omega_err=-9.1% | d1=55.5 (super=True) d2_growth=500 m d3_band=True
+
+[A1] winner: C3  (min W1 (dt=0.5) = 147.09 veh km; tie set (within 5%): ['C3'])
+[A1] transfer q2000: W1=142.84 RMSE=3.45 e_s=-2.4% omega_err=-10.9%
+
+=== A10 C0: metric=rmse extra=None ===
+[grid 6x6] rmse=5.520 at kappa_c=3.162e+00 kappa_r=3.162e-01 extras={}
+[polish nfev=40] rmse=5.391 at kappa_c=6.332e+00 kappa_r=5.925e-01 extras={}
+[re-eval] dt=1: w1=179.710 rmse=5.391 | dt=0.5: w1=182.953 rmse=5.318 (78 sims total)
+[eval dt=0.5] W1=182.95 RMSE=5.32 e_s=+8.5% omega_err=-36.0% | d1=44.5 (super=False) d2_growth=200 m d3_band=True
+
+=== A10 C1: metric=w1 extra=None ===
+[grid 6x6] w1=183.175 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=167.715 at kappa_c=4.594e+00 kappa_r=3.781e-01 extras={}
+[re-eval] dt=1: w1=167.715 rmse=5.539 | dt=0.5: w1=157.234 rmse=5.234 (78 sims total)
+[eval dt=0.5] W1=157.23 RMSE=5.23 e_s=+2.8% omega_err=-40.0% | d1=38.7 (super=False) d2_growth=200 m d3_band=True
+
+=== A10 C2: metric=w1 extra={'gamma': (0.0, 1.0)} ===
+[grid 6x6] w1=219.283 at kappa_c=5.012e-02 kappa_r=1.000e-04 extras={'gamma': 0.5}
+[polish nfev=40] w1=203.162 at kappa_c=8.153e-02 kappa_r=5.484e-05 extras={'gamma': 0.383877743484226}
+[re-eval] dt=1: w1=203.162 rmse=6.854 | dt=0.5: w1=201.666 rmse=6.610 (78 sims total)
+[eval dt=0.5] W1=201.67 RMSE=6.61 e_s=-4.8% omega_err=-33.5% | d1=56.9 (super=True) d2_growth=400 m d3_band=True
+
+=== A10 C3: metric=w1 extra={'ws_frac': (0.5, 1.0)} ===
+[grid 6x6] w1=176.082 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={'ws_frac': 0.75}
+[polish nfev=40] w1=167.026 at kappa_c=7.357e-01 kappa_r=7.155e-02 extras={'ws_frac': 0.5}
+[re-eval] dt=1: w1=167.026 rmse=5.231 | dt=0.5: w1=171.281 rmse=4.859 (78 sims total)
+[eval dt=0.5] W1=171.28 RMSE=4.86 e_s=+5.8% omega_err=-15.7% | d1=48.8 (super=True) d2_growth=200 m d3_band=True
+
+[A10] winner: C1  (min W1 (dt=0.5) = 157.23 veh km; tie set (within 5%): ['C1'])
+[A10] transfer q2000: W1=107.30 RMSE=2.93 e_s=+0.2% omega_err=-40.2%
+
+wrote /Users/yuanmingchen/Desktop/Research/SUMO/analysis/out/e7/ablation.json (26.0 s)

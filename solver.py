@@ -35,6 +35,20 @@ preserved in practice (verified in test_solver.py).
 Class speeds: c_f = v_f (constant); c_s = c_a = u_s(t), the CAV reference
 speed schedule, u_s(t) = u_xi for t in [t_slow, t_fast] and v_f otherwise.
 
+Structural knobs (all default to None = exact legacy behavior, bit-for-bit):
+
+* gamma: continuous capture-agent weight.  When set, the reaction layer uses
+  ell = a + gamma s, overriding capture_form (gamma = 1 == "lf", gamma = 0 ==
+  "af"); intermediate gamma interpolates how strongly already-caught cars
+  recruit further captures.
+
+* w_s, P_s: s-class congested-branch parameters.  When set, the s-class
+  TRANSPORT demand/supply (hence its speed law min{c_s, w_s (P_s / rho - 1)},
+  still evaluated at the TOTAL rho) uses (w_s or w, P_s or P), while the
+  f-class and the reaction-layer Delta v = [V_{v_f}(rho; w, P) - u_s]_+ keep
+  the shared road FD.  Requires w_s <= w and P_s <= P (asserted at config
+  time); see transport_step for the invariant-domain proof.
+
 Units: SI throughout (veh/m, m/s, veh/s).  kappa_c, kappa_r are per-vehicle
 [1/veh] and unit-consistent in SI without conversion.
 """
@@ -103,6 +117,28 @@ class SimConfig:
     q_xi_max: float | None = None  # one-lane-blocked capacity [veh/s];
     #                                None = capacity cap disabled (legacy)
     beta: float = 0.5             # open-lane fraction of the blocked FD
+    gamma: float | None = None    # capture-agent weight: ell = a + gamma s,
+    #                               overrides capture_form; None = legacy
+    w_s: float | None = None      # s-class backward wave speed [m/s];
+    #                               None = shared road w (legacy)
+    P_s: float | None = None      # s-class jam density [veh/m];
+    #                               None = shared road P (legacy)
+
+    def __post_init__(self) -> None:
+        if self.w_s is not None:
+            assert self.w_s <= self.w, (
+                f"w_s = {self.w_s} exceeds the road wave speed w = {self.w}: "
+                "the transport invariant-domain bound rho <= P is only "
+                "proved for w_s <= w (see transport_step)")
+        if self.P_s is not None:
+            assert self.P_s <= self.P, (
+                f"P_s = {self.P_s} exceeds the road jam density P = "
+                f"{self.P}: the transport invariant-domain bound rho <= P "
+                "is only proved for P_s <= P (see transport_step)")
+        if self.gamma is not None:
+            assert self.gamma >= 0.0, (
+                f"gamma = {self.gamma} < 0 makes ell = a + gamma s negative, "
+                "voiding reaction positivity (tex Prop. reaction-positivity)")
 
 
 @dataclass
@@ -175,31 +211,38 @@ def cav_density(cfg: SimConfig, t: float, nx: int) -> np.ndarray:
 # --------------------------------------------------------------------------
 
 def reaction_exact(f, s, a, rho, dv, kappa_c: float, kappa_r: float,
-                   P: float, dt: float, capture_form: str = "lf"):
+                   P: float, dt: float, capture_form: str = "lf",
+                   gamma: float | None = None):
     """Exact update of the frozen-coefficient reaction ODE over dt.
 
-    With sigma = kappa_c ell dv, mu = kappa_r (P - rho)_+ dv, gamma = sigma
+    With sigma = kappa_c ell dv, mu = kappa_r (P - rho)_+ dv, theta = sigma
     + mu and p = f + s (all frozen at substep start),
 
-        f* = (mu/gamma) p + (f - (mu/gamma) p) exp(-gamma dt),  s* = p - f*,
+        f* = (mu/theta) p + (f - (mu/theta) p) exp(-theta dt),  s* = p - f*,
 
-    and f* = f, s* = s where gamma = 0 (tex eq. exact-reaction-update).
-    ell = a + s ("lf" baseline: any slow-mode vehicle captures) or ell = a
-    ("af": strict tex form, eq. per-capita-rates).  Conserves p exactly and
-    keeps f*, s* >= 0 (tex Prop. reaction-positivity).
+    and f* = f, s* = s where theta = 0 (tex eq. exact-reaction-update).
+    Capture-agent density: ell = a + gamma s when gamma is not None (the
+    continuous knob, OVERRIDING capture_form: gamma = 1 == "lf", gamma = 0
+    == "af"); otherwise ell = a + s ("lf" baseline: any slow-mode vehicle
+    captures) or ell = a ("af": strict tex form, eq. per-capita-rates).
+    Conserves p exactly and keeps f*, s* >= 0 (tex Prop.
+    reaction-positivity) for any ell >= 0, so gamma changes no invariant.
     """
     f = np.asarray(f, float)
     s = np.asarray(s, float)
-    ell = (a + s) if capture_form == "lf" else np.asarray(a, float)
+    if gamma is not None:
+        ell = np.asarray(a, float) + gamma * s
+    else:
+        ell = (a + s) if capture_form == "lf" else np.asarray(a, float)
     dv = np.maximum(np.asarray(dv, float), 0.0)
     sigma = kappa_c * ell * dv
     mu = kappa_r * np.maximum(P - np.asarray(rho, float), 0.0) * dv
-    gamma = sigma + mu
+    theta = sigma + mu
     p = f + s
-    g_safe = np.where(gamma > 0.0, gamma, 1.0)
-    f_eq = mu / g_safe * p
-    f_new = np.where(gamma > 0.0,
-                     f_eq + (f - f_eq) * np.exp(-gamma * dt),
+    th_safe = np.where(theta > 0.0, theta, 1.0)
+    f_eq = mu / th_safe * p
+    f_new = np.where(theta > 0.0,
+                     f_eq + (f - f_eq) * np.exp(-theta * dt),
                      f)
     return f_new, p - f_new
 
@@ -244,6 +287,28 @@ def transport_step(f, s, a, c_f: float, c_s: float, cfg: SimConfig,
     update stays conservative.  With q_xi_max=None (default) the scheme is
     bit-identical to the uncapped one.
 
+    s-class congested branch (cfg.w_s / cfg.P_s): when either is set, the
+    s-class demand/supply use (w_s or w, P_s or P) -- equivalently the
+    s-class speed law becomes min{c_s, w_s (P_s / rho - 1)}, still evaluated
+    at the TOTAL rho -- while the f-class keeps the shared road (w, P).
+    Because rho can exceed P_s (only P bounds it), the raw s-supply
+    w_s (P_s - rho) can go negative there; it is clipped at 0 on this branch
+    so all class fluxes stay nonnegative.  Invariant-domain proof for
+    w_s <= w, P_s <= P (asserted in SimConfig): (i) rho <= P: each interface
+    flux obeys F^m_{j-1/2} <= pi^m_{j-1} S_m(rho_j), and for rho_j <= P both
+    class supplies are dominated by the road supply -- S_f <= w (P - rho_j)
+    directly, and S_s <= max{0, w_s (P_s - rho_j)} <= w (P - rho_j) since
+    for rho_j <= P_s both factors are dominated (w_s <= w, P_s - rho_j <=
+    P - rho_j) and for rho_j > P_s the clipped value is 0 -- so the total
+    inflow is <= (pi^f + pi^s) w (P - rho_j) <= w (P - rho_j); with
+    nonnegative outflow, rho_j + lam w (P - rho_j) <= P under lam w <= 1
+    (eq. CFL, unchanged since w_s <= w).  (ii) f, s >= 0: all fluxes are
+    nonnegative (supply clipped at 0), and each class outflow obeys
+    F^m_{j+1/2} <= pi^m_j D_m(rho_j) <= pi^m_j c_m rho_j = c_m m_j, so
+    m_new_j >= m_j (1 - lam c_m) >= 0 under lam c_m <= 1 (c_s <= v_f,
+    unchanged).  With w_s=None and P_s=None (default) the legacy code path
+    runs bit-identically.
+
     Returns (f_new, s_new, q_admitted, q_out) with boundary fluxes in veh/s.
     """
     lam = cfg.dt / cfg.dx
@@ -254,8 +319,16 @@ def transport_step(f, s, a, c_f: float, c_s: float, cfg: SimConfig,
 
     D_f = demand(rho, c_f, cfg.w, cfg.P)
     S_f = supply(rho, c_f, cfg.w, cfg.P)
-    D_s = demand(rho, c_s, cfg.w, cfg.P)
-    S_s = supply(rho, c_s, cfg.w, cfg.P)
+    if cfg.w_s is None and cfg.P_s is None:      # legacy path, bit-identical
+        D_s = demand(rho, c_s, cfg.w, cfg.P)
+        S_s = supply(rho, c_s, cfg.w, cfg.P)
+    else:
+        w_s = cfg.w if cfg.w_s is None else cfg.w_s
+        P_s = cfg.P if cfg.P_s is None else cfg.P_s
+        D_s = demand(rho, c_s, w_s, P_s)
+        # clip: rho may exceed P_s (only P bounds it), where the raw
+        # s-supply goes negative; see the invariant-domain proof above
+        S_s = np.maximum(supply(rho, c_s, w_s, P_s), 0.0)
 
     nx = f.size
     F_f = np.empty(nx + 1)
@@ -350,7 +423,8 @@ def simulate(cfg: SimConfig) -> SimResult:
         rho_star = a_star + f + s
         dv = np.maximum(speed(rho_star, cfg.v_f, cfg.w, cfg.P) - u_s, 0.0)
         f, s = reaction_exact(f, s, a_star, rho_star, dv, cfg.kappa_c,
-                              cfg.kappa_r, cfg.P, cfg.dt, cfg.capture_form)
+                              cfg.kappa_r, cfg.P, cfg.dt, cfg.capture_form,
+                              cfg.gamma)
     _save(n_steps)
 
     t_arr = np.array([sv[0] for sv in saves])

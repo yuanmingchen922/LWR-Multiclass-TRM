@@ -130,6 +130,25 @@ population. See `E6_results.md`.
 
 ![Data vs classical vs native catch & release](out/e6/fig_profiles_A1_u15_q2500.png)
 
+**Step 9 — Wasserstein calibration, stuck-class flux function, speed transfer (E7).**
+Following the second review round we (i) switched the calibration objective to
+the 1-Wasserstein distance between cumulative density curves, (ii) added two
+structural knobs (capture-localization gamma and a stuck-class congested branch
+w_s <= w), and (iii) ran a speed-transfer study. Outcome: for A=1 the
+W1 + stuck-class-flux fit makes the wake supercritical (55.5 vs data's
+58.6 veh/km) and **restores the post-release rarefaction** that the E6 fit
+lacked — one bug (subcritical wedge under a triangular FD) had caused both
+symptoms; the overtaking-flow error also collapses (-32% -> -9%). For A=10 the
+model produces the "slow but not stuck" band (an inside-the-flux-function
+state), though with fast capture/release churn instead of the measured 20-50 s
+turnover — a partial structural limit, honestly reported. Transfer: kappas
+fitted at u=15 only predict u = 10...24 with a flat W1 curve (<= 5.9% growth),
+at or below the classical LWR+MB baseline almost everywhere. See `E7_results.md`.
+
+![Post-release rarefaction restored](out/e7/fig_profiles_e7_A1_u15_q2500.png)
+
+![Speed transfer curve](out/e7/fig_transfer_curve.png)
+
 ---
 
 ## How to run
@@ -149,6 +168,9 @@ python3 ev5_dispersion.py        # linear stability            -> out/ev5/
 python3 ev5_waves.py             # wave spectra of the data (--selftest available)
 python3 ev5_sim_vs_data.py       # model-vs-data spectra, same analysis box
 python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out/e6/
+python3 e7_wasserstein.py --selftest  # E7: W1 metric gate
+python3 e7_ablation.py           # E7: W1/gamma/w_s ablation -> out/e7/
+python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
 ```
 
 ## File guide
@@ -174,6 +196,9 @@ python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out
 | `ev5_waves.py` | **E-V5 (data)**: 2D FFT wave spectra of the density fields (amplitude, propagation direction, dominant speed); includes a synthetic-wave self-test that gates the sign conventions. |
 | `ev5_sim_vs_data.py` | **E-V5 (closure)**: same-box spectral comparison of the simulated vs measured fields. |
 | `e6_native_mb.py` | **E6**: fits (κ_c, κ_r) to the measured density field and compares three models — classical LWR+MB (DM-G cap, κ=0), native catch & release (no cap), and the capped E-V4b variant — on heatmaps, profile snapshots with the f/s split, and all four metrics. |
+| `e7_wasserstein.py` | **E7**: 1-Wasserstein calibration infrastructure (cumulative-density metric with a synthetic exactness gate) and the generic field-fit machinery. |
+| `e7_ablation.py` | **E7**: RMSE-vs-W1 and structural-knob ablation (gamma, w_s), wake-density / rarefaction / dynamic-equilibrium diagnostics, winner figures. |
+| `e7_transfer.py` | **E7**: speed-transfer study — kappas fitted at u=15 predicting u=10…24, vs the classical baseline. |
 
 ### Tests and independent audits
 
@@ -183,6 +208,7 @@ python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out
 | `audit_solver.py` | Independent numerical audit of the solver (written by a separate review pass): re-derives the mass balance step by step, dt-refinement, reaction exactness vs closed form. |
 | `audit_cap.py` | Independent audit of the capacity cap: inertness when disabled, conservation with the cap active, analytic steady state re-derived by bisection, sign guards. |
 | `audit_dispersion.py` | Independent sympy re-derivation of all Jacobians and the dispersion relation; compares against the module to machine precision (exit 0 = pass). |
+| `audit_e7.py` | Independent audit of the gamma/w_s/P_s solver knobs (bit-identity, invariants, cap-path regression). |
 
 ### Reports (read these for the full story)
 
@@ -193,6 +219,7 @@ python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out
 | `E_V4_results.md` | Baseline forward validation: what matches, what fails, and the case for the capacity constraint. |
 | `E_V4b_V5_results.md` | Capacity-cap results, the A-dependence of the bottleneck capacity, the dispersion theorem, the wave spectra, and the model-vs-data closure. |
 | `E6_results.md` | The native moving-bottleneck result: field-calibrated catch & release vs classical LWR+MB, the two-stream interpretation, and the honest trade-offs. |
+| `E7_results.md` | Wasserstein calibration, the stuck-class flux function fix (supercritical wake + restored rarefaction), the A=10 dynamic-equilibrium verdict, and the speed-transfer study. |
 
 ### Outputs (`out/`)
 
@@ -205,6 +232,7 @@ python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out
 | `ev4b_q2000/`, `ev4b_q2440/` (+`_af`) | Capacity-capped comparison metrics and figures. |
 | `ev5/` | Dispersion summary + stability maps, wave-spectra summary + figures, model-vs-data spectra. |
 | `e6/` | Native-MB fit results, three-model metrics, heatmap and profile comparison figures. |
+| `e7/` | Ablation table, transfer curve + JSON, winner profile/heatmap figures (incl. the t=850 post-release panel). |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas

@@ -1,0 +1,33 @@
+{
+  "A": 3.0,
+  "uc": 15.0,
+  "qin": 2500.0,
+  "form": "lf",
+  "metric": "w1",
+  "kappa_c": 12.406238809829553,
+  "kappa_r": 1.3171678243985028,
+  "extra": {},
+  "extra_bounds": {},
+  "objective": 142.8356361636656,
+  "grid_objective": 145.4614281610779,
+  "at_dt_fit": {
+    "dt": 1.0,
+    "save_every": 10,
+    "w1": 142.8356361636656,
+    "rmse": 5.205039220550995
+  },
+  "at_production": {
+    "dt": 0.5,
+    "save_every": 20,
+    "w1": 148.88724686379638,
+    "rmse": 5.109802917223777
+  },
+  "n_sim": 78,
+  "n_polish": 40,
+  "t_win": [
+    100.0,
+    1000.0
+  ],
+  "x_max_cells": 200,
+  "data_source": "loader.load_scenario (../Second, rep-mean)"
+}

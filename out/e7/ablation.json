@@ -1,0 +1,494 @@
+{
+  "_meta": {
+    "scenario": "u15 q2500 form=lf",
+    "transfer": "winner zero-refit on q2000",
+    "configs": {
+      "C0": {
+        "metric": "rmse",
+        "extra": null
+      },
+      "C1": {
+        "metric": "w1",
+        "extra": null
+      },
+      "C2": {
+        "metric": "w1",
+        "extra": {
+          "gamma": [
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "C3": {
+        "metric": "w1",
+        "extra": {
+          "ws_frac": [
+            0.5,
+            1.0
+          ]
+        }
+      }
+    },
+    "dt_fit": 1.0,
+    "dt_production": 0.5,
+    "winner_rule": "primary min W1 at dt=0.5; ties within 5% broken by |d1-58| then d2 width growth > 0",
+    "diagnostics": {
+      "d1": "mean rho_tot over [x_cav-1000 m, x_cav-200 m], t in [600.0, 740.0] s; data ~58 veh/km; supercritical iff > 48.5 veh/km",
+      "d2": "width growth of {rho_tot > 35 veh/km} and peak decay between t=780 and 960 s, x <= 20 km",
+      "d3": "s > 1 veh/km layer extent behind CAV, turnover (int s dx)/(int J_r dx) with J_r = kappa_r (P-rho)+ dv s, and slow-not-stuck band in [x_cav-2000 m, x_cav]: speed in (u_xi+2, v_f-3) m/s AND rho > 1.2x inflow; slow window [260.0, 740.0] s"
+    },
+    "smoke": false,
+    "runtime_s": 26.0
+  },
+  "A1": {
+    "tag": "A1_u15_q2500",
+    "data_diagnostics_q2500": {
+      "d1": {
+        "wake_mean_vehkm": 58.58399761199952,
+        "supercritical": true,
+        "n_snapshots": 15
+      },
+      "d2": {
+        "width_780_m": 2200.0,
+        "width_960_m": 3400.0,
+        "width_growth_m": 1200.0,
+        "peak_780_vehkm": 60.03342819213867,
+        "peak_960_vehkm": 45.93210296630859,
+        "peak_decay_vehkm_per_s": 0.07834069569905601,
+        "rarefaction_present": true
+      }
+    },
+    "configs": {
+      "C0": {
+        "metric": "rmse",
+        "kappa_c": 0.1781493275225649,
+        "kappa_r": 0.009487750545858343,
+        "extra": {},
+        "fit_objective_dtfit": 5.489665487698116,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 174.67252554670142,
+          "RMSE": 5.39345207278911,
+          "e_s": -0.021060083825558594,
+          "omega_err": -0.32237847250158463,
+          "rho_rmse_per_rep": 5.729232129236108,
+          "Ns_mae": 6.09770144245487,
+          "d1": {
+            "wake_mean_vehkm": 47.118305719198766,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 2900.0,
+            "width_960_m": 3400.0,
+            "width_growth_m": 500.0,
+            "peak_780_vehkm": 72.31705691924876,
+            "peak_960_vehkm": 48.420009066318244,
+            "peak_decay_vehkm_per_s": 0.13276137696072507,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 1322.4489795918366,
+            "turnover_time_s": 50.11959392063604,
+            "band_speed_ms": 20.841857728879926,
+            "band_rho_vehkm": 39.086912839168605,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      },
+      "C1": {
+        "metric": "w1",
+        "kappa_c": 0.14078869900991323,
+        "kappa_r": 0.009276492843261236,
+        "extra": {},
+        "fit_objective_dtfit": 162.49997547521164,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 162.60802556768078,
+          "RMSE": 6.3418651719863375,
+          "e_s": 0.10079569396309607,
+          "omega_err": -0.20344640451931992,
+          "rho_rmse_per_rep": 6.626264141270518,
+          "Ns_mae": 10.374743950161427,
+          "d1": {
+            "wake_mean_vehkm": 53.94558683861123,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 2400.0,
+            "width_960_m": 2600.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 65.24240849315834,
+            "peak_960_vehkm": 47.9522276282701,
+            "peak_decay_vehkm_per_s": 0.09605656036049019,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 1055.1020408163265,
+            "turnover_time_s": 47.9033399127526,
+            "band_speed_ms": 22.723139462279107,
+            "band_rho_vehkm": 34.95525129778531,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      },
+      "C2": {
+        "metric": "w1",
+        "kappa_c": 0.06535797562670517,
+        "kappa_r": 0.000454190289488779,
+        "extra": {
+          "gamma": 0.6426809461210201
+        },
+        "fit_objective_dtfit": 169.93257255884578,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 169.44930487275192,
+          "RMSE": 7.546876265994723,
+          "e_s": 0.031552681822590765,
+          "omega_err": -0.21847756983627029,
+          "rho_rmse_per_rep": 7.788306848305821,
+          "Ns_mae": 12.32735642325122,
+          "d1": {
+            "wake_mean_vehkm": 60.06012127212558,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 2100.0,
+            "width_960_m": 2700.0,
+            "width_growth_m": 600.0,
+            "peak_780_vehkm": 71.32374226428387,
+            "peak_960_vehkm": 49.62601063292704,
+            "peak_decay_vehkm_per_s": 0.12054295350753791,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 871.4285714285714,
+            "turnover_time_s": 1049.970637985009,
+            "band_speed_ms": 23.6456121692349,
+            "band_rho_vehkm": 33.02280021643582,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      },
+      "C3": {
+        "metric": "w1",
+        "kappa_c": 0.04624885142474469,
+        "kappa_r": 0.0005681400112226481,
+        "extra": {
+          "ws_frac": 0.5998151363168716
+        },
+        "fit_objective_dtfit": 148.1959986009419,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 147.0948085726189,
+          "RMSE": 5.7360197106454685,
+          "e_s": 0.03032537762664478,
+          "omega_err": -0.09061016541038695,
+          "rho_rmse_per_rep": 6.045689758797482,
+          "Ns_mae": 12.888188889180203,
+          "d1": {
+            "wake_mean_vehkm": 55.48791418079933,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 1900.0,
+            "width_960_m": 2400.0,
+            "width_growth_m": 500.0,
+            "peak_780_vehkm": 71.5317585242054,
+            "peak_960_vehkm": 49.640415760435744,
+            "peak_decay_vehkm_per_s": 0.12161857090983143,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 863.265306122449,
+            "turnover_time_s": 768.9496140280983,
+            "band_speed_ms": 23.384858939260972,
+            "band_rho_vehkm": 32.71373893551588,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      }
+    },
+    "winner": "C3",
+    "winner_rule": "min W1 (dt=0.5) = 147.09 veh km; tie set (within 5%): ['C3']",
+    "winner_transfer_q2000": {
+      "W1": 142.83659790146882,
+      "RMSE": 3.4543657130829395,
+      "e_s": -0.02419293962225304,
+      "omega_err": -0.10919443694186823,
+      "rho_rmse_per_rep": 3.946128404279862,
+      "Ns_mae": 5.626573389716448,
+      "d1": {
+        "wake_mean_vehkm": 34.60639658514422,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "d2": {
+        "width_780_m": 1000.0,
+        "width_960_m": 0.0,
+        "width_growth_m": -1000.0,
+        "peak_780_vehkm": 59.2464687088046,
+        "peak_960_vehkm": 34.51392295768953,
+        "peak_decay_vehkm_per_s": 0.13740303195063927,
+        "rarefaction_present": false
+      },
+      "d3": {
+        "s_layer_extent_m": 734.6938775510204,
+        "turnover_time_s": 597.4176776501715,
+        "band_speed_ms": 25.372484270866746,
+        "band_rho_vehkm": 23.650630038706115,
+        "rho_inflow_vehkm": 19.8870108648398,
+        "slow_not_stuck_band": false
+      }
+    },
+    "data_diagnostics_q2000": {
+      "d1": {
+        "wake_mean_vehkm": 42.31063056310018,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "d2": {
+        "width_780_m": 1000.0,
+        "width_960_m": 900.0,
+        "width_growth_m": -100.0,
+        "peak_780_vehkm": 59.51996765136719,
+        "peak_960_vehkm": 37.670040893554685,
+        "peak_decay_vehkm_per_s": 0.12138848198784724,
+        "rarefaction_present": false
+      }
+    }
+  },
+  "A10": {
+    "tag": "A10_u15_q2500",
+    "data_diagnostics_q2500": {
+      "d1": {
+        "wake_mean_vehkm": 55.36573772430419,
+        "supercritical": true,
+        "n_snapshots": 15
+      },
+      "d2": {
+        "width_780_m": 1100.0,
+        "width_960_m": 1200.0,
+        "width_growth_m": 100.0,
+        "peak_780_vehkm": 65.4547019958496,
+        "peak_960_vehkm": 38.80796737670899,
+        "peak_decay_vehkm_per_s": 0.1480374145507812,
+        "rarefaction_present": true
+      }
+    },
+    "configs": {
+      "C0": {
+        "metric": "rmse",
+        "kappa_c": 6.331602936982039,
+        "kappa_r": 0.5925228159257974,
+        "extra": {},
+        "fit_objective_dtfit": 5.390939023850166,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 182.95250643071228,
+          "RMSE": 5.3180825922020905,
+          "e_s": 0.08488442674190008,
+          "omega_err": -0.36000225620487514,
+          "rho_rmse_per_rep": 6.076988166958864,
+          "Ns_mae": 27.501194684316204,
+          "d1": {
+            "wake_mean_vehkm": 44.460672673159756,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 1200.0,
+            "width_960_m": 1400.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 48.51011045746468,
+            "peak_960_vehkm": 43.31567738664075,
+            "peak_decay_vehkm_per_s": 0.028857961504577367,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 2510.204081632653,
+            "turnover_time_s": 0.5873091690459213,
+            "band_speed_ms": 23.689559453058212,
+            "band_rho_vehkm": 32.990357628540856,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      },
+      "C1": {
+        "metric": "w1",
+        "kappa_c": 4.593679005456043,
+        "kappa_r": 0.37809214623408693,
+        "extra": {},
+        "fit_objective_dtfit": 167.71549782160437,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 157.23400622820134,
+          "RMSE": 5.233785104153419,
+          "e_s": 0.0280073217586815,
+          "omega_err": -0.3999102482269882,
+          "rho_rmse_per_rep": 6.005046373592956,
+          "Ns_mae": 43.49044942559037,
+          "d1": {
+            "wake_mean_vehkm": 38.68511163652739,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 1000.0,
+            "width_960_m": 1200.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 44.479962404915824,
+            "peak_960_vehkm": 38.47683775680574,
+            "peak_decay_vehkm_per_s": 0.03335069248950045,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 3230.612244897959,
+            "turnover_time_s": 0.8803768442619302,
+            "band_speed_ms": 22.939566075014355,
+            "band_rho_vehkm": 32.72117828381579,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      },
+      "C2": {
+        "metric": "w1",
+        "kappa_c": 0.08152640588581903,
+        "kappa_r": 5.4841090419232715e-05,
+        "extra": {
+          "gamma": 0.383877743484226
+        },
+        "fit_objective_dtfit": 203.16157047480795,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 201.6659231306294,
+          "RMSE": 6.609839991915299,
+          "e_s": -0.04823135724482493,
+          "omega_err": -0.33541097813633636,
+          "rho_rmse_per_rep": 7.23680599651791,
+          "Ns_mae": 24.23220613657187,
+          "d1": {
+            "wake_mean_vehkm": 56.89176199051295,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 2100.0,
+            "width_960_m": 2500.0,
+            "width_growth_m": 400.0,
+            "peak_780_vehkm": 70.08611792730335,
+            "peak_960_vehkm": 50.24769865171397,
+            "peak_decay_vehkm_per_s": 0.11021344041994101,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 834.6938775510204,
+            "turnover_time_s": 8454.932315034823,
+            "band_speed_ms": 24.076315736309567,
+            "band_rho_vehkm": 32.297407762427056,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      },
+      "C3": {
+        "metric": "w1",
+        "kappa_c": 0.7357008210276482,
+        "kappa_r": 0.07154831337599958,
+        "extra": {
+          "ws_frac": 0.5
+        },
+        "fit_objective_dtfit": 167.02575529219723,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 171.28099085970973,
+          "RMSE": 4.859035903244195,
+          "e_s": 0.05787579319732385,
+          "omega_err": -0.15681269001253162,
+          "rho_rmse_per_rep": 5.683828838512352,
+          "Ns_mae": 23.63797187025179,
+          "d1": {
+            "wake_mean_vehkm": 48.83047112364264,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "d2": {
+            "width_780_m": 1700.0,
+            "width_960_m": 1900.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 51.272201912219515,
+            "peak_960_vehkm": 45.4270000377438,
+            "peak_decay_vehkm_per_s": 0.03247334374708729,
+            "rarefaction_present": true
+          },
+          "d3": {
+            "s_layer_extent_m": 1067.3469387755101,
+            "turnover_time_s": 4.998034895913974,
+            "band_speed_ms": 23.44864419669233,
+            "band_rho_vehkm": 34.432751799205235,
+            "rho_inflow_vehkm": 24.858763581049747,
+            "slow_not_stuck_band": true
+          }
+        }
+      }
+    },
+    "winner": "C1",
+    "winner_rule": "min W1 (dt=0.5) = 157.23 veh km; tie set (within 5%): ['C1']",
+    "winner_transfer_q2000": {
+      "W1": 107.2980272273883,
+      "RMSE": 2.928193443929121,
+      "e_s": 0.002245915118966835,
+      "omega_err": -0.4015705745501125,
+      "rho_rmse_per_rep": 3.4386596721584652,
+      "Ns_mae": 11.11921398963648,
+      "d1": {
+        "wake_mean_vehkm": 30.624933962714543,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "d2": {
+        "width_780_m": 600.0,
+        "width_960_m": 100.0,
+        "width_growth_m": -500.0,
+        "peak_780_vehkm": 41.47531535227752,
+        "peak_960_vehkm": 35.47324283455044,
+        "peak_decay_vehkm_per_s": 0.03334484732070599,
+        "rarefaction_present": false
+      },
+      "d3": {
+        "s_layer_extent_m": 681.6326530612245,
+        "turnover_time_s": 0.8961412370879975,
+        "band_speed_ms": 25.535839207884568,
+        "band_rho_vehkm": 24.151322851518287,
+        "rho_inflow_vehkm": 19.8870108648398,
+        "slow_not_stuck_band": false
+      }
+    },
+    "data_diagnostics_q2000": {
+      "d1": {
+        "wake_mean_vehkm": 25.852733608881632,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "d2": {
+        "width_780_m": 300.0,
+        "width_960_m": 0.0,
+        "width_growth_m": -300.0,
+        "peak_780_vehkm": 39.29708557128906,
+        "peak_960_vehkm": 27.41172676086426,
+        "peak_decay_vehkm_per_s": 0.06602977116902667,
+        "rarefaction_present": false
+      }
+    }
+  }
+}

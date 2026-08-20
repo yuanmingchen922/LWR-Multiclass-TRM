@@ -366,6 +366,142 @@ def test_cap_with_reactions_invariants():
 
 
 # --------------------------------------------------------------------------
+# 10-13. Structural knobs: gamma (capture agent) and w_s / P_s (s-class FD)
+# --------------------------------------------------------------------------
+
+def _e6_a1_cfg(**kw) -> SimConfig:
+    """A1 native-fit config (out/e6/fits.json, rounded): kappa_c = 0.504,
+    kappa_r = 0.0306, lf, u15, q2500, production dt = 0.5 / save_every = 20,
+    no capacity cap."""
+    d = dict(kappa_c=0.504, kappa_r=0.0306, capture_form="lf", u_xi=15.0,
+             q_in=2500.0 / 3600.0, dt=0.5, save_every=20)
+    d.update(kw)
+    return base_cfg(**d)
+
+
+def _assert_bit_equal(res, ref, what: str) -> None:
+    """f, s, N_s, omega of a SimResult bit-equal a reference (SimResult or
+    npz mapping)."""
+    for name in ("f", "s", "N_s", "omega"):
+        r = ref[name] if not isinstance(ref, type(res)) else getattr(ref, name)
+        assert np.array_equal(r, getattr(res, name)), \
+            f"{name} not bit-identical: {what}"
+
+
+def test_struct_none_bit_identical():
+    """t10: all new fields at None reproduce the PRE-change solver bit for
+    bit (reference out/struct_ref_A1.npz was generated from the solver
+    BEFORE gamma / w_s / P_s existed)."""
+    ref_path = HERE / "out" / "struct_ref_A1.npz"
+    assert ref_path.exists(), (
+        "missing pre-change reference out/struct_ref_A1.npz -- it must be "
+        "generated with the PRE-knob solver, not recreated here")
+    res = simulate(_e6_a1_cfg())
+    _assert_bit_equal(res, np.load(ref_path), "new-fields-None vs pre-change")
+    print("  gamma=w_s=P_s=None: f, s, N_s, omega bit-identical to the "
+          "stored pre-change reference")
+
+
+def test_gamma_matches_capture_forms():
+    """t11: gamma = 1 bit-equals capture_form='lf', gamma = 0 bit-equals
+    'af'; capture_form is set to the OPPOSITE form to prove gamma
+    overrides it."""
+    res_lf = simulate(_e6_a1_cfg(capture_form="lf"))
+    res_af = simulate(_e6_a1_cfg(capture_form="af"))
+    res_g1 = simulate(_e6_a1_cfg(capture_form="af", gamma=1.0))
+    res_g0 = simulate(_e6_a1_cfg(capture_form="lf", gamma=0.0))
+    _assert_bit_equal(res_g1, res_lf, "gamma=1.0 vs capture_form='lf'")
+    _assert_bit_equal(res_g0, res_af, "gamma=0.0 vs capture_form='af'")
+    i740 = int(np.argmin(np.abs(res_lf.t - 740.0)))
+    print(f"  gamma=1.0 == 'lf' (N_s(740) = {res_g1.N_s[i740]:.2f} veh) and "
+          f"gamma=0.0 == 'af' (N_s(740) = {res_g0.N_s[i740]:.2f} veh), both "
+          "bit-identical and overriding capture_form")
+
+
+def test_ws_ps_shared_bit_identical():
+    """t12: w_s = w and P_s = P explicitly set bit-equal the None run."""
+    res0 = simulate(_e6_a1_cfg())
+    res1 = simulate(_e6_a1_cfg(w_s=W, P_s=P))
+    _assert_bit_equal(res1, res0, "w_s=w, P_s=P vs None")
+    print("  w_s=w, P_s=P: f, s, N_s, omega bit-identical to the None run")
+
+
+def test_ws_slow_wake_wedge():
+    """t13: w_s < w keeps all invariants; effect on the steady wake wedge
+    (mean rho over [x_cav - 1 km, x_cav - 0.2 km] at t = 700 s).
+
+    FINDING (deviation from the original t13 spec, which asserted a HIGHER
+    wedge at w_s = 0.7 w): at w_s = 0.7 w the override is provably INERT
+    during the slowdown window -- with c_s = u_xi = 15 the s-class critical
+    density r*_s = w_s P / (u_xi + w_s) = 59.9 veh/km lies ABOVE the run's
+    maximum total density (53.4 veh/km), so D_s = c_s rho is never capped
+    and S_s never binds; the pre-release fields are bit-identical and the
+    t = 700 wedge is UNCHANGED (both numbers still reported).  The branch
+    only engages after release (c_s = v_f drops r*_s to 35.9 veh/km < the
+    44 veh/km wedge), where it slows the platoon dispersal -- the
+    post-t750 fields DO differ.  The wedge-raising mechanism is therefore
+    verified at w_s = 0.5 w, where r*_s = 45.8 veh/km dips below the
+    wedge: there the t = 700 wedge is strictly HIGHER."""
+    # config-time guards fire with a clear message
+    for bad in (dict(w_s=1.01 * W), dict(P_s=1.01 * P)):
+        try:
+            _e6_a1_cfg(**bad)
+            raise RuntimeError(f"config assert did not fire for {bad}")
+        except AssertionError as e:
+            assert "invariant-domain" in str(e)
+    print("  config-time asserts fire for w_s > w and P_s > P")
+
+    res0 = simulate(_e6_a1_cfg())
+    res7 = simulate(_e6_a1_cfg(w_s=0.7 * W))
+    res5 = simulate(_e6_a1_cfg(w_s=0.5 * W))
+
+    for tag, res in (("0.7w", res7), ("0.5w", res5)):
+        balance = res.on_road + res.outflowed
+        rel = abs(res.injected - balance) / max(res.injected, 1.0)
+        rho = res.a + res.f + res.s
+        print(f"  w_s={tag}: ledger rel err {rel:.2e}, "
+              f"min f {res.f.min():.3e}, min s {res.s.min():.3e}, "
+              f"max rho {rho.max():.6f} (P = {P:.6f})")
+        assert rel < 1e-10, f"mass ledger not closed with w_s = {tag}"
+        assert res.f.min() >= 0.0 and res.s.min() >= 0.0
+        assert rho.max() <= P + 1e-12, f"rho exceeded P with w_s = {tag}"
+
+    def wedge(res, i):
+        xc = res.x_cav[i]
+        assert np.isfinite(xc)
+        m = (res.x >= xc - 1000.0) & (res.x <= xc - 200.0)
+        return (res.a[i] + res.f[i] + res.s[i])[m].mean()
+
+    i700 = int(np.argmin(np.abs(res0.t - 700.0)))
+    w0 = wedge(res0, i700)
+    w7 = wedge(res7, i700)
+    w5 = wedge(res5, i700)
+    print(f"  wake wedge mean rho at t=700, [x_cav-1km, x_cav-0.2km]: "
+          f"w_s=None {w0 * 1000:.4f} vs w_s=0.7w {w7 * 1000:.4f} vs "
+          f"w_s=0.5w {w5 * 1000:.4f} veh/km")
+
+    # 0.7w: inert before release (r*_s above the realized densities) ...
+    r_star7 = 0.7 * W * P / (15.0 + 0.7 * W)
+    rho0_max = (res0.a + res0.f + res0.s).max()
+    assert r_star7 > rho0_max, \
+        "premise broke: r*_s(0.7w, u15) no longer above the run's max rho"
+    pre = res0.t <= 750.0
+    assert np.array_equal(res7.f[pre], res0.f[pre]) and \
+        np.array_equal(res7.s[pre], res0.s[pre]), \
+        "w_s=0.7w altered pre-release fields despite r*_s > max rho"
+    assert w7 == w0, "wedge should be untouched by the inert 0.7w override"
+    # ... but binding after release, when c_s = v_f (platoon dispersal)
+    assert not np.array_equal(res7.s, res0.s), \
+        "w_s=0.7w should alter the post-release dispersal (r*_s(v_f) < 44)"
+
+    # 0.5w: r*_s below the wedge -> the congested branch binds inside the
+    # slowdown window and the steady wedge is strictly denser
+    assert w5 > w0, (
+        "w_s = 0.5 w did not raise the steady wake wedge density "
+        f"({w5 * 1000:.4f} <= {w0 * 1000:.4f} veh/km)")
+
+
+# --------------------------------------------------------------------------
 
 if __name__ == "__main__":
     tests = [
@@ -378,6 +514,10 @@ if __name__ == "__main__":
         ("cap disabled bit-identity", test_cap_disabled_bit_identical),
         ("cap analytic bottleneck", test_cap_analytic_bottleneck),
         ("cap + reactions invariants", test_cap_with_reactions_invariants),
+        ("struct knobs None bit-identity", test_struct_none_bit_identical),
+        ("gamma == capture forms", test_gamma_matches_capture_forms),
+        ("w_s=w, P_s=P bit-identity", test_ws_ps_shared_bit_identical),
+        ("w_s=0.7w wake wedge", test_ws_slow_wake_wedge),
     ]
     for name, fn in tests:
         print(f"[{name}]")
