@@ -1,0 +1,103 @@
+
+=== A1 L0: rmse, no knobs (E6 baseline reproduction) ===
+[grid 6x6] rmse=5.631 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] rmse=5.490 at kappa_c=1.781e-01 kappa_r=9.488e-03 extras={}
+[re-eval] dt=1: w1=177.938 rmse=5.490 | dt=0.5: w1=174.673 rmse=5.393 (78 sims total)
+[eval dt=0.5] W1=174.67 RMSE=5.39 e_s=-2.1% wake=47.1 stuckf=0.037731390866450325 wavi=1.97 wedge=0.13333333333333333 slayer=2567 m ds|s|=2.289e+01
+
+=== A1 L1: w1, no knobs (metric alone) ===
+[grid 6x6] w1=168.346 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=162.500 at kappa_c=1.408e-01 kappa_r=9.276e-03 extras={}
+[re-eval] dt=1: w1=162.500 rmse=6.360 | dt=0.5: w1=162.608 rmse=6.342 (78 sims total)
+[eval dt=0.5] W1=162.61 RMSE=6.34 e_s=+10.1% wake=53.9 stuckf=0.031309537222605634 wavi=1.45 wedge=0.1111111111111111 slayer=2067 m ds|s|=2.156e+01
+
+=== A1 L2: w1 + w_s=0.6w fixed (stuck-class flux) ===
+[grid 6x6] w1=150.659 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=147.143 at kappa_c=5.616e-01 kappa_r=4.573e-02 extras={}
+[re-eval] dt=1: w1=147.143 rmse=4.001 | dt=0.5: w1=149.930 rmse=4.551 (78 sims total)
+[eval dt=0.5] W1=149.93 RMSE=4.55 e_s=+11.2% wake=48.9 stuckf=0.007046031015933471 wavi=1.22 wedge=0.0 slayer=2967 m ds|s|=1.122e+01
+
+=== A1 L3: w1 + w_s=0.6w + downstream_release (E8 fix, full) ===
+[grid 6x6] w1=169.859 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=146.116 at kappa_c=3.019e-01 kappa_r=1.773e-02 extras={}
+[re-eval] dt=1: w1=146.116 rmse=4.700 | dt=0.5: w1=147.026 rmse=4.732 (78 sims total)
+[eval dt=0.5] W1=147.03 RMSE=4.73 e_s=+10.2% wake=40.6 stuckf=0.0 wavi=1.20 wedge=0.08888888888888889 slayer=3067 m ds|s|=0.000e+00
+
+=== A1 L4: w1 + downstream_release, NO w_s ===
+[grid 6x6] w1=177.550 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=153.705 at kappa_c=2.882e-01 kappa_r=1.626e-02 extras={}
+[re-eval] dt=1: w1=153.705 rmse=5.147 | dt=0.5: w1=154.339 rmse=5.138 (78 sims total)
+[eval dt=0.5] W1=154.34 RMSE=5.14 e_s=+8.7% wake=40.5 stuckf=0.0 wavi=1.25 wedge=0.1111111111111111 slayer=3167 m ds|s|=0.000e+00
+
+[A1 L2 analytic] closed form predicts DECAY and the measured amplitude is indeed non-growing (sign agreement); decay-rate magnitudes are not comparable because the lump is continuously re-seeded from the CAV cell (source-fed quasi-equilibrium)
+[A1 e7C3 analytic ref] efold meas=199 s vs frozen-f pred=180 s -> ratio=1.10 (within factor 2: True) | naive pred=63 s ratio=3.16
+
+[A1] final pick: L3  (min W1 among rungs = L3 (W1=147.0))
+[A1] transfer q2000: W1=132.49 RMSE=3.93 e_s=+5.6% omega_err=-11.8% wake=33.1
+
+===== ladder A1 (u15 q2500 lf) =====
+data refs: wake=58.6 veh/km, waviness=2.21 veh/km, wedge_frac=0.044, rarefaction_growth=1200 m
+rung    kappa_c   kappa_r      W1   RMSE     e_s  om_err   wake  stuckf   wavi  wedge  rare_m  slayer     ds|s|
+L0    1.781e-01 9.488e-03   174.7   5.39   -2.1%  -32.2%   47.1  0.0377   1.97  0.133     500    2567  2.29e+01
+L1    1.408e-01 9.276e-03   162.6   6.34  +10.1%  -20.3%   53.9  0.0313   1.45  0.111     200    2067  2.16e+01
+L2    5.616e-01 4.573e-02   149.9   4.55  +11.2%  -22.8%   48.9  0.0070   1.22  0.000    -700    2967  1.12e+01
+L3    3.019e-01 1.773e-02   147.0   4.73  +10.2%   -7.5%   40.6  0.0000   1.20  0.089    -500    3067  0.00e+00
+L4    2.882e-01 1.626e-02   154.3   5.14   +8.7%   -9.3%   40.5  0.0000   1.25  0.111     100    3167  0.00e+00
+
+=== A10 L0: rmse, no knobs (E6 baseline reproduction) ===
+[grid 6x6] rmse=5.520 at kappa_c=3.162e+00 kappa_r=3.162e-01 extras={}
+[polish nfev=40] rmse=5.391 at kappa_c=6.332e+00 kappa_r=5.925e-01 extras={}
+[re-eval] dt=1: w1=179.710 rmse=5.391 | dt=0.5: w1=182.953 rmse=5.318 (78 sims total)
+[eval dt=0.5] W1=182.95 RMSE=5.32 e_s=+8.5% wake=44.5 stuckf=0.0006735197224265573 wavi=0.99 wedge=0.0 slayer=4967 m ds|s|=1.322e+01
+
+=== A10 L1: w1, no knobs (metric alone) ===
+[grid 6x6] w1=183.175 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=167.715 at kappa_c=4.594e+00 kappa_r=3.781e-01 extras={}
+[re-eval] dt=1: w1=167.715 rmse=5.539 | dt=0.5: w1=157.234 rmse=5.234 (78 sims total)
+[eval dt=0.5] W1=157.23 RMSE=5.23 e_s=+2.8% wake=38.7 stuckf=0.00767498352555632 wavi=1.17 wedge=0.0 slayer=6367 m ds|s|=1.321e+01
+
+=== A10 L2: w1 + w_s=0.6w fixed (stuck-class flux) ===
+[grid 6x6] w1=172.630 at kappa_c=3.162e+00 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=158.214 at kappa_c=3.078e+01 kappa_r=2.620e+00 extras={}
+[re-eval] dt=1: w1=158.214 rmse=4.924 | dt=0.5: w1=146.710 rmse=4.656 (78 sims total)
+[eval dt=0.5] W1=146.71 RMSE=4.66 e_s=+3.5% wake=38.9 stuckf=0.0013724720301379726 wavi=1.20 wedge=0.0 slayer=7367 m ds|s|=4.543e+00
+
+=== A10 L3: w1 + w_s=0.6w + downstream_release (E8 fix, full) ===
+[grid 6x6] w1=179.845 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=160.545 at kappa_c=1.834e+00 kappa_r=1.410e-01 extras={}
+[re-eval] dt=1: w1=160.545 rmse=5.025 | dt=0.5: w1=159.287 rmse=4.953 (78 sims total)
+[eval dt=0.5] W1=159.29 RMSE=4.95 e_s=+4.4% wake=34.0 stuckf=0.0 wavi=1.10 wedge=0.0 slayer=5267 m ds|s|=0.000e+00
+
+=== A10 L4: w1 + downstream_release, NO w_s ===
+[grid 6x6] w1=187.257 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=159.000 at kappa_c=7.637e+00 kappa_r=6.120e-01 extras={}
+[re-eval] dt=1: w1=159.000 rmse=5.125 | dt=0.5: w1=154.156 rmse=5.010 (78 sims total)
+[eval dt=0.5] W1=154.16 RMSE=5.01 e_s=+5.4% wake=33.7 stuckf=0.0 wavi=1.09 wedge=0.0 slayer=7267 m ds|s|=0.000e+00
+
+[A10 L2 analytic] linear regime unresolvable: predicted e-fold 1.8 s is below the 10 s save cadence, so s reaches its local equilibrium between saves and the measured amplitude tracks the quasi-steady wedge, not the linear mode
+
+[A10 guard] L2 s-layer 7367 m > 1500 m -> structure-anchored refit (kc_grid capped)
+[grid 6x6] w1=210.205 at kappa_c=5.012e-02 kappa_r=5.012e-04 extras={}
+[polish nfev=40] w1=186.694 at kappa_c=5.995e-02 kappa_r=2.677e-03 extras={}
+[re-eval] dt=1: w1=186.694 rmse=5.633 | dt=0.5: w1=186.240 rmse=5.414 (78 sims total)
+[grid 6x6] w1=224.833 at kappa_c=5.012e-02 kappa_r=1.000e-04 extras={}
+[polish nfev=40] w1=199.386 at kappa_c=6.244e-02 kappa_r=3.692e-04 extras={}
+[re-eval] dt=1: w1=199.386 rmse=5.577 | dt=0.5: w1=198.802 rmse=5.384 (78 sims total)
+[A10 guard] CONFLICT: no rung satisfies both demands; picked L2anc (no rung meets the 1.5 km bound on the max-reach measure; picked the thinnest layer): s-layer max 1667 m / snapshot-mean 1390 m vs the 1500 m bound, W1 186.2 = +26.9% vs unconstrained 146.7 (L2, s-layer max 7367 m)
+[A10] CAVEAT: final pick L2anc carries no downstream_release and re-leaks stuck vehicles downstream: stuck fraction 5.8% at t=700 s, max downstream s 24.4 veh/km
+
+[A10] final pick: L2anc  (min W1 among rungs = L2 (W1=146.7); A=10 guard moved the pick to L2anc)
+[A10] transfer q2000: W1=105.08 RMSE=2.87 e_s=-2.9% omega_err=-12.6% wake=28.2
+
+===== ladder A10 (u15 q2500 lf) =====
+data refs: wake=55.4 veh/km, waviness=1.78 veh/km, wedge_frac=0.000, rarefaction_growth=100 m
+rung    kappa_c   kappa_r      W1   RMSE     e_s  om_err   wake  stuckf   wavi  wedge  rare_m  slayer     ds|s|
+L0    6.332e+00 5.925e-01   183.0   5.32   +8.5%  -36.0%   44.5  0.0007   0.99  0.000     200    4967  1.32e+01
+L1    4.594e+00 3.781e-01   157.2   5.23   +2.8%  -40.0%   38.7  0.0077   1.17  0.000     200    6367  1.32e+01
+L2    3.078e+01 2.620e+00   146.7   4.66   +3.5%  -38.2%   38.9  0.0014   1.20  0.000    -300    7367  4.54e+00
+L2anc 5.995e-02 2.677e-03   186.2   5.41   +0.9%  -16.9%   51.6  0.0577   1.41  0.000     400    1667  2.44e+01
+L3    1.834e+00 1.410e-01   159.3   4.95   +4.4%  -33.4%   34.0  0.0000   1.10  0.000       0    5267  0.00e+00
+L3anc 6.244e-02 3.692e-04   198.8   5.38   +3.0%  -10.1%   49.2  0.0000   1.12  0.000     400    2067  0.00e+00
+L4    7.637e+00 6.120e-01   154.2   5.01   +5.4%  -42.5%   33.7  0.0000   1.09  0.000    -200    7267  0.00e+00
+
+wrote /Users/yuanmingchen/Desktop/Research/SUMO/analysis/out/e8/ladder.json (39.7 s)

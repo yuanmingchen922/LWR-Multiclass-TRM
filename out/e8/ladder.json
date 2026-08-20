@@ -1,0 +1,1113 @@
+{
+  "_meta": {
+    "scenario": "u15 q2500 form=lf",
+    "protocol": "e7_wasserstein.fit_field: 6x6 log grid + Nelder-Mead maxfev 40 at dt_fit=1, production re-eval dt=0.5; fixed knobs via extra_cfg passthrough (NOT fitted)",
+    "rungs": {
+      "L0": {
+        "metric": "rmse",
+        "extra_cfg": {},
+        "description": "rmse, no knobs (E6 baseline reproduction)"
+      },
+      "L1": {
+        "metric": "w1",
+        "extra_cfg": {},
+        "description": "w1, no knobs (metric alone)"
+      },
+      "L2": {
+        "metric": "w1",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023
+        },
+        "description": "w1 + w_s=0.6w fixed (stuck-class flux)"
+      },
+      "L3": {
+        "metric": "w1",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023,
+          "downstream_release": true
+        },
+        "description": "w1 + w_s=0.6w + downstream_release (E8 fix, full)"
+      },
+      "L4": {
+        "metric": "w1",
+        "extra_cfg": {
+          "downstream_release": true
+        },
+        "description": "w1 + downstream_release, NO w_s"
+      }
+    },
+    "ws_fixed": {
+      "frac": 0.6,
+      "w_s_ms": 3.7275859886472023
+    },
+    "dt_fit": 1.0,
+    "dt_production": 0.5,
+    "pick_rule": "min W1 at dt=0.5 (q2500); A=10 guard: pick must have s-layer <= 1500 m AND W1 within 15% of the unconstrained optimum if possible (structure-anchored refit with kc_grid logspace(-2.5,-0.5) when the optimum violates the s-layer bound); conflicts reported honestly",
+    "diagnostics": {
+      "wake": "mean rho_tot over [x_cav-1 km, x_cav-0.2 km], t in [600,740] s (e7_ablation.d1_wake; data A1 58.6 / A10 55.4)",
+      "ds_stuck": "(int s dx)/(int rho dx) over data cells with lower edge >= x_cav at t=700 s",
+      "waviness": "std of linearly detrended rho_tot over cell centers in [x_cav+0.5 km, x_cav+5 km], mean over t in [400,740] s; data value uses the nominal CAV trajectory",
+      "wedge": "fraction of cells in [x_cav+0.5, x_cav+5 km] at t=600 s with rho strictly between (mean rho over [x_cav+0.5, x_cav+1.5 km]) + 4 and (q_in/v_f) - 4 veh/km",
+      "rarefaction": "width growth of {rho_tot > 35 veh/km} between t=780 and 960 s (e7_ablation.d2_rarefaction)",
+      "s_layer": "max over t in [600,740] s of max_x {x_cav - x_center : s > 1 veh/km}; mean over snapshots as aux",
+      "ds_max_s": "max |s| over data cells fully inside the DR-zeroed region (solver cells j > int(x_cav//50)), all snapshots; must be exactly 0.0 for L3/L4"
+    },
+    "smoke": false,
+    "runtime_s": 39.7
+  },
+  "A1": {
+    "tag": "A1_u15_q2500",
+    "data_refs_q2500": {
+      "wake": {
+        "wake_mean_vehkm": 58.58399761199952,
+        "supercritical": true,
+        "n_snapshots": 15
+      },
+      "waviness": {
+        "std_vehkm": 2.2103561354627397,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.044444444444444446,
+        "overtake_zone_vehkm": 13.439033565521239,
+        "background_vehkm": 24.858763581049747,
+        "band_lo_vehkm": 17.43903356552124,
+        "band_hi_vehkm": 20.858763581049747,
+        "band_nonempty": true,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 2200.0,
+        "width_960_m": 3400.0,
+        "width_growth_m": 1200.0,
+        "peak_780_vehkm": 60.03342819213867,
+        "peak_960_vehkm": 45.93210296630859,
+        "peak_decay_vehkm_per_s": 0.07834069569905601,
+        "rarefaction_present": true
+      }
+    },
+    "rungs": {
+      "L0": {
+        "metric": "rmse",
+        "description": "rmse, no knobs (E6 baseline reproduction)",
+        "extra_cfg": {},
+        "kappa_c": 0.1781493275225649,
+        "kappa_r": 0.009487750545858343,
+        "fit_objective_dtfit": 5.489665487698116,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 174.67252554670142,
+          "RMSE": 5.39345207278911,
+          "e_s": -0.021060083825558594,
+          "omega_err": -0.32237847250158463,
+          "wake": {
+            "wake_mean_vehkm": 47.118305719198766,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.037731390866450325,
+            "s_veh": 5.68718438843705,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.970064682642623,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.13333333333333333,
+            "overtake_zone_vehkm": 12.96956448042451,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 16.96956448042451,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": true,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 2900.0,
+            "width_960_m": 3400.0,
+            "width_growth_m": 500.0,
+            "peak_780_vehkm": 72.31705691924876,
+            "peak_960_vehkm": 48.420009066318244,
+            "peak_decay_vehkm_per_s": 0.13276137696072507,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 2567.0,
+            "mean_m": 2217.0,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 22.892159802183702
+        }
+      },
+      "L1": {
+        "metric": "w1",
+        "description": "w1, no knobs (metric alone)",
+        "extra_cfg": {},
+        "kappa_c": 0.14078869900991323,
+        "kappa_r": 0.009276492843261236,
+        "fit_objective_dtfit": 162.49997547521164,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 162.60802556768078,
+          "RMSE": 6.3418651719863375,
+          "e_s": 0.10079569396309607,
+          "omega_err": -0.20344640451931992,
+          "wake": {
+            "wake_mean_vehkm": 53.94558683861123,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.031309537222605634,
+            "s_veh": 5.193243651474889,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.4467084802672918,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.1111111111111111,
+            "overtake_zone_vehkm": 14.980089347550413,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 18.98008934755041,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": true,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 2400.0,
+            "width_960_m": 2600.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 65.24240849315834,
+            "peak_960_vehkm": 47.9522276282701,
+            "peak_decay_vehkm_per_s": 0.09605656036049019,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 2067.0,
+            "mean_m": 1743.6666666666667,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 21.557726021129433
+        }
+      },
+      "L2": {
+        "metric": "w1",
+        "description": "w1 + w_s=0.6w fixed (stuck-class flux)",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023
+        },
+        "kappa_c": 0.5615534446808064,
+        "kappa_r": 0.04572691573285907,
+        "fit_objective_dtfit": 147.1434616543564,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 149.92967847383335,
+          "RMSE": 4.5508379618621415,
+          "e_s": 0.11186504034351943,
+          "omega_err": -0.22764329458097787,
+          "wake": {
+            "wake_mean_vehkm": 48.909622636661545,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.007046031015933471,
+            "s_veh": 1.1760446947477488,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.2189645545511028,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 16.672876388457368,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 20.672876388457368,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": true,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 2400.0,
+            "width_960_m": 1700.0,
+            "width_growth_m": -700.0,
+            "peak_780_vehkm": 50.252683906531985,
+            "peak_960_vehkm": 46.81132262653083,
+            "peak_decay_vehkm_per_s": 0.019118673777784187,
+            "rarefaction_present": false
+          },
+          "s_layer": {
+            "max_m": 2967.0,
+            "mean_m": 2530.3333333333335,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 11.221628633665915
+        }
+      },
+      "L3": {
+        "metric": "w1",
+        "description": "w1 + w_s=0.6w + downstream_release (E8 fix, full)",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023,
+          "downstream_release": true
+        },
+        "kappa_c": 0.3018658577665688,
+        "kappa_r": 0.017734787487355887,
+        "fit_objective_dtfit": 146.115672860541,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 147.02580523837628,
+          "RMSE": 4.7316447283076055,
+          "e_s": 0.10205461245530541,
+          "omega_err": -0.07487323959753384,
+          "wake": {
+            "wake_mean_vehkm": 40.611404402921295,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0,
+            "s_veh": 0.0,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.2047023363014338,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.08888888888888889,
+            "overtake_zone_vehkm": 15.081195033200009,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 19.08119503320001,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": true,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 2200.0,
+            "width_960_m": 1700.0,
+            "width_growth_m": -500.0,
+            "peak_780_vehkm": 58.783582328887995,
+            "peak_960_vehkm": 45.84909144075881,
+            "peak_decay_vehkm_per_s": 0.0718582827118288,
+            "rarefaction_present": false
+          },
+          "s_layer": {
+            "max_m": 3067.0,
+            "mean_m": 2657.0,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 0.0
+        }
+      },
+      "L4": {
+        "metric": "w1",
+        "description": "w1 + downstream_release, NO w_s",
+        "extra_cfg": {
+          "downstream_release": true
+        },
+        "kappa_c": 0.2881618844950402,
+        "kappa_r": 0.016256894885285797,
+        "fit_objective_dtfit": 153.70502155073368,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 154.33854015568207,
+          "RMSE": 5.138452902497066,
+          "e_s": 0.08687397925537792,
+          "omega_err": -0.09298518716219714,
+          "wake": {
+            "wake_mean_vehkm": 40.50845998505062,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0,
+            "s_veh": 0.0,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.2490937363665666,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.1111111111111111,
+            "overtake_zone_vehkm": 14.625803275579392,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 18.625803275579393,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": true,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 2500.0,
+            "width_960_m": 2600.0,
+            "width_growth_m": 100.0,
+            "peak_780_vehkm": 49.31006561053006,
+            "peak_960_vehkm": 47.60026364456416,
+            "peak_decay_vehkm_per_s": 0.009498899810921675,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 3167.0,
+            "mean_m": 2670.3333333333335,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 0.0
+        }
+      }
+    },
+    "analytic_check_L2": {
+      "t_win_s": [
+        450.0,
+        650.0
+      ],
+      "n_points": 21,
+      "assumptions": "closed-form lf reaction downstream: ell = s (a = 0), background (rho, f, dv) from the simulated lump peak, per-snapshot rates averaged over the window, amplitude preserved by transport (lump advects at u_s ~ CAV speed), Delta v from the shared road FD; the naive form additionally assumes s << f ~ rho, and resolvability needs the e-fold slow vs the 10 s save cadence and fast vs the CAV-cell seed influx",
+      "amp_first_vehkm": 1.8293260068852295,
+      "amp_last_vehkm": 1.8158550696510452,
+      "s_over_rho_first": 0.10078003764126992,
+      "s_over_rho_last": 0.10004911187810929,
+      "save_cadence_s": 10.0,
+      "rho_ds_vehkm": 18.548091543939613,
+      "f_ds_vehkm": 16.25182360287591,
+      "dv_ds_ms": 12.935598734839372,
+      "lambda_measured_per_s": -1.9538133079593767e-05,
+      "lambda_naive_per_s": -0.012029492093217853,
+      "lambda_frozen_f_per_s": -0.028709651370719024,
+      "efold_measured_s": null,
+      "efold_naive_s": null,
+      "efold_frozen_f_s": null,
+      "status": "closed form predicts DECAY and the measured amplitude is indeed non-growing (sign agreement); decay-rate magnitudes are not comparable because the lump is continuously re-seeded from the CAV cell (source-fed quasi-equilibrium)"
+    },
+    "analytic_check_reference_e7C3": {
+      "config": "E7 A1 winner C3 (Mladen's diagnosed leak case): kappa_c=0.04625, kappa_r=0.0005681, w_s=0.5998*w, no downstream_release",
+      "kappa_c": 0.04624885142474469,
+      "kappa_r": 0.0005681400112226481,
+      "ws_frac": 0.5998151363168716,
+      "W1": 147.0948085726189,
+      "ds_stuck": {
+        "frac": 0.09507927330719064,
+        "s_veh": 15.760741286764171,
+        "t_s": 700.0
+      },
+      "waviness_sim": {
+        "std_vehkm": 1.9849794585360947,
+        "n_snapshots": 35
+      },
+      "growth": {
+        "t_win_s": [
+          450.0,
+          650.0
+        ],
+        "n_points": 21,
+        "assumptions": "closed-form lf reaction downstream: ell = s (a = 0), background (rho, f, dv) from the simulated lump peak, per-snapshot rates averaged over the window, amplitude preserved by transport (lump advects at u_s ~ CAV speed), Delta v from the shared road FD; the naive form additionally assumes s << f ~ rho, and resolvability needs the e-fold slow vs the 10 s save cadence and fast vs the CAV-cell seed influx",
+        "amp_first_vehkm": 7.855117786156612,
+        "amp_last_vehkm": 23.165723469039186,
+        "s_over_rho_first": 0.30106167610172885,
+        "s_over_rho_last": 0.7730691563445602,
+        "save_cadence_s": 10.0,
+        "rho_ds_vehkm": 29.48337048403253,
+        "f_ds_vehkm": 12.20327994732613,
+        "dv_ds_ms": 12.935598734839372,
+        "lambda_measured_per_s": 0.0050360754329951424,
+        "lambda_naive_per_s": 0.015895505627039293,
+        "lambda_frozen_f_per_s": 0.005557577691723913,
+        "efold_measured_s": 198.5673195933967,
+        "efold_naive_s": 62.91086445837462,
+        "efold_frozen_f_s": 179.93450662671864,
+        "efold_ratio_meas_over_frozen_f": 1.1035533056776738,
+        "within_factor_2_frozen_f": true,
+        "efold_ratio_meas_over_naive": 3.1563279459429467,
+        "within_factor_2_naive": false,
+        "status": "ok"
+      }
+    },
+    "exactness_check_L3_L4": {
+      "L3": {
+        "ds_max_s_vehkm": 0.0,
+        "exact_zero": true
+      },
+      "L4": {
+        "ds_max_s_vehkm": 0.0,
+        "exact_zero": true
+      }
+    },
+    "guard": {
+      "applies": false
+    },
+    "pick": "L3",
+    "pick_rule": "min W1 among rungs = L3 (W1=147.0)",
+    "pick_transfer_q2000": {
+      "W1": 132.49106313633735,
+      "RMSE": 3.9317808072013514,
+      "e_s": 0.055638914609429824,
+      "omega_err": -0.11843746881845932,
+      "wake": {
+        "wake_mean_vehkm": 33.144291932839295,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "ds_stuck": {
+        "frac": 0.0,
+        "s_veh": 0.0,
+        "t_s": 700.0
+      },
+      "waviness_sim": {
+        "std_vehkm": 0.5180958712673824,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.0,
+        "overtake_zone_vehkm": 15.39149657964632,
+        "background_vehkm": 19.8870108648398,
+        "band_lo_vehkm": 19.391496579646322,
+        "band_hi_vehkm": 15.887010864839802,
+        "band_nonempty": false,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 500.0,
+        "width_960_m": 0.0,
+        "width_growth_m": -500.0,
+        "peak_780_vehkm": 37.40809697828931,
+        "peak_960_vehkm": 31.294684166301902,
+        "peak_decay_vehkm_per_s": 0.03396340451104114,
+        "rarefaction_present": false
+      },
+      "s_layer": {
+        "max_m": 2267.0,
+        "mean_m": 1917.0,
+        "n_snapshots": 15
+      },
+      "ds_max_s_vehkm": 0.0
+    },
+    "data_refs_q2000": {
+      "wake": {
+        "wake_mean_vehkm": 42.31063056310018,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "waviness": {
+        "std_vehkm": 1.3995301269311116,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.0,
+        "overtake_zone_vehkm": 14.623074340820313,
+        "background_vehkm": 19.8870108648398,
+        "band_lo_vehkm": 18.623074340820313,
+        "band_hi_vehkm": 15.887010864839802,
+        "band_nonempty": false,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 1000.0,
+        "width_960_m": 900.0,
+        "width_growth_m": -100.0,
+        "peak_780_vehkm": 59.51996765136719,
+        "peak_960_vehkm": 37.670040893554685,
+        "peak_decay_vehkm_per_s": 0.12138848198784724,
+        "rarefaction_present": false
+      }
+    }
+  },
+  "A10": {
+    "tag": "A10_u15_q2500",
+    "data_refs_q2500": {
+      "wake": {
+        "wake_mean_vehkm": 55.36573772430419,
+        "supercritical": true,
+        "n_snapshots": 15
+      },
+      "waviness": {
+        "std_vehkm": 1.784027631835117,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.0,
+        "overtake_zone_vehkm": 17.75671627044678,
+        "background_vehkm": 24.858763581049747,
+        "band_lo_vehkm": 21.75671627044678,
+        "band_hi_vehkm": 20.858763581049747,
+        "band_nonempty": false,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 1100.0,
+        "width_960_m": 1200.0,
+        "width_growth_m": 100.0,
+        "peak_780_vehkm": 65.4547019958496,
+        "peak_960_vehkm": 38.80796737670899,
+        "peak_decay_vehkm_per_s": 0.1480374145507812,
+        "rarefaction_present": true
+      }
+    },
+    "rungs": {
+      "L0": {
+        "metric": "rmse",
+        "description": "rmse, no knobs (E6 baseline reproduction)",
+        "extra_cfg": {},
+        "kappa_c": 6.331602936982039,
+        "kappa_r": 0.5925228159257974,
+        "fit_objective_dtfit": 5.390939023850166,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 182.95250643071228,
+          "RMSE": 5.3180825922020905,
+          "e_s": 0.08488442674190008,
+          "omega_err": -0.36000225620487514,
+          "wake": {
+            "wake_mean_vehkm": 44.460672673159756,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0006735197224265573,
+            "s_veh": 0.11961437580170553,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 0.9907337280936843,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 18.92625838814876,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 22.92625838814876,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": false,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 1200.0,
+            "width_960_m": 1400.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 48.51011045746468,
+            "peak_960_vehkm": 43.31567738664075,
+            "peak_decay_vehkm_per_s": 0.028857961504577367,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 4967.0,
+            "mean_m": 4257.0,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 13.219689889965943
+        }
+      },
+      "L1": {
+        "metric": "w1",
+        "description": "w1, no knobs (metric alone)",
+        "extra_cfg": {},
+        "kappa_c": 4.593679005456043,
+        "kappa_r": 0.37809214623408693,
+        "fit_objective_dtfit": 167.71549782160437,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 157.23400622820134,
+          "RMSE": 5.233785104153419,
+          "e_s": 0.0280073217586815,
+          "omega_err": -0.3999102482269882,
+          "wake": {
+            "wake_mean_vehkm": 38.68511163652739,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.00767498352555632,
+            "s_veh": 1.3024224688766615,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.1746910783407252,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 17.612718031880657,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 21.612718031880657,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": false,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 1000.0,
+            "width_960_m": 1200.0,
+            "width_growth_m": 200.0,
+            "peak_780_vehkm": 44.479962404915824,
+            "peak_960_vehkm": 38.47683775680574,
+            "peak_decay_vehkm_per_s": 0.03335069248950045,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 6367.0,
+            "mean_m": 5450.333333333333,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 13.211463606648172
+        }
+      },
+      "L2": {
+        "metric": "w1",
+        "description": "w1 + w_s=0.6w fixed (stuck-class flux)",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023
+        },
+        "kappa_c": 30.782382531294285,
+        "kappa_r": 2.619853899885482,
+        "fit_objective_dtfit": 158.21435879394429,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 146.70978360455027,
+          "RMSE": 4.656090697402634,
+          "e_s": 0.03486400445833628,
+          "omega_err": -0.38172113812181163,
+          "wake": {
+            "wake_mean_vehkm": 38.942789794820925,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0013724720301379726,
+            "s_veh": 0.23566660516654345,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.2010617724123949,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 17.917167451915496,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 21.917167451915496,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": false,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 1000.0,
+            "width_960_m": 700.0,
+            "width_growth_m": -300.0,
+            "peak_780_vehkm": 48.77359958082465,
+            "peak_960_vehkm": 37.64721472427169,
+            "peak_decay_vehkm_per_s": 0.061813249203072,
+            "rarefaction_present": false
+          },
+          "s_layer": {
+            "max_m": 7367.0,
+            "mean_m": 6317.0,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 4.542847023168823
+        }
+      },
+      "L3": {
+        "metric": "w1",
+        "description": "w1 + w_s=0.6w + downstream_release (E8 fix, full)",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023,
+          "downstream_release": true
+        },
+        "kappa_c": 1.834437026306577,
+        "kappa_r": 0.14098561550963823,
+        "fit_objective_dtfit": 160.54501442259925,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 159.2869155368652,
+          "RMSE": 4.952705858183524,
+          "e_s": 0.04412489479121828,
+          "omega_err": -0.33418965566566566,
+          "wake": {
+            "wake_mean_vehkm": 33.99551009928466,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0,
+            "s_veh": 0.0,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.0972490307101779,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 17.935476077590984,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 21.935476077590984,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": false,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 0.0,
+            "width_960_m": 0.0,
+            "width_growth_m": 0.0,
+            "peak_780_vehkm": 33.99422117437324,
+            "peak_960_vehkm": 33.88074378449465,
+            "peak_decay_vehkm_per_s": 0.0006304299437699415,
+            "rarefaction_present": false
+          },
+          "s_layer": {
+            "max_m": 5267.0,
+            "mean_m": 4503.666666666667,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 0.0
+        }
+      },
+      "L4": {
+        "metric": "w1",
+        "description": "w1 + downstream_release, NO w_s",
+        "extra_cfg": {
+          "downstream_release": true
+        },
+        "kappa_c": 7.636718800930309,
+        "kappa_r": 0.6119849226571814,
+        "fit_objective_dtfit": 158.99985785167388,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 154.15602469140535,
+          "RMSE": 5.009556242350737,
+          "e_s": 0.05434504530845734,
+          "omega_err": -0.4254886741466558,
+          "wake": {
+            "wake_mean_vehkm": 33.67772540637012,
+            "supercritical": false,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0,
+            "s_veh": 0.0,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.0935640139174019,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 18.274120568383573,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 22.274120568383573,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": false,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 200.0,
+            "width_960_m": 0.0,
+            "width_growth_m": -200.0,
+            "peak_780_vehkm": 35.43802570548691,
+            "peak_960_vehkm": 32.79176378407351,
+            "peak_decay_vehkm_per_s": 0.014701455118963322,
+            "rarefaction_present": false
+          },
+          "s_layer": {
+            "max_m": 7267.0,
+            "mean_m": 6217.0,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 0.0
+        }
+      },
+      "L2anc": {
+        "metric": "w1",
+        "description": "w1 + w_s=0.6w fixed (stuck-class flux) [structure-anchored: kc_grid logspace(-2.5,-0.5)]",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023
+        },
+        "kappa_c": 0.059949774228454426,
+        "kappa_r": 0.0026772077621345283,
+        "fit_objective_dtfit": 186.6944931704374,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 186.23966859876325,
+          "RMSE": 5.414414072121516,
+          "e_s": 0.008744593919500221,
+          "omega_err": -0.169022421608776,
+          "wake": {
+            "wake_mean_vehkm": 51.574240862212235,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.05772377838397092,
+            "s_veh": 10.118205206683323,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.4099615708030981,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 16.841817783274873,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 20.841817783274873,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": true,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 1600.0,
+            "width_960_m": 2000.0,
+            "width_growth_m": 400.0,
+            "peak_780_vehkm": 65.2534249365176,
+            "peak_960_vehkm": 43.571655847567676,
+            "peak_decay_vehkm_per_s": 0.12045427271638849,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 1667.0,
+            "mean_m": 1390.3333333333333,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 24.367831174918024
+        }
+      },
+      "L3anc": {
+        "metric": "w1",
+        "description": "w1 + w_s=0.6w + downstream_release (E8 fix, full) [structure-anchored: kc_grid logspace(-2.5,-0.5)]",
+        "extra_cfg": {
+          "w_s": 3.7275859886472023,
+          "downstream_release": true
+        },
+        "kappa_c": 0.062436278870842535,
+        "kappa_r": 0.00036917843813304277,
+        "fit_objective_dtfit": 199.38603716033205,
+        "n_sim_fit": 78,
+        "eval_q2500": {
+          "W1": 198.8020442190784,
+          "RMSE": 5.383797349114664,
+          "e_s": 0.030339875649514614,
+          "omega_err": -0.10105435721312046,
+          "wake": {
+            "wake_mean_vehkm": 49.19378086906689,
+            "supercritical": true,
+            "n_snapshots": 15
+          },
+          "ds_stuck": {
+            "frac": 0.0,
+            "s_veh": 0.0,
+            "t_s": 700.0
+          },
+          "waviness_sim": {
+            "std_vehkm": 1.1208720374092391,
+            "n_snapshots": 35
+          },
+          "wedge": {
+            "frac": 0.0,
+            "overtake_zone_vehkm": 18.50613220444714,
+            "background_vehkm": 24.858763581049747,
+            "band_lo_vehkm": 22.50613220444714,
+            "band_hi_vehkm": 20.858763581049747,
+            "band_nonempty": false,
+            "n_cells": 45,
+            "t_s": 600.0
+          },
+          "rarefaction": {
+            "width_780_m": 1400.0,
+            "width_960_m": 1800.0,
+            "width_growth_m": 400.0,
+            "peak_780_vehkm": 68.88609736037645,
+            "peak_960_vehkm": 44.182036305099444,
+            "peak_decay_vehkm_per_s": 0.13724478364042783,
+            "rarefaction_present": true
+          },
+          "s_layer": {
+            "max_m": 2067.0,
+            "mean_m": 1717.0,
+            "n_snapshots": 15
+          },
+          "ds_max_s_vehkm": 0.0
+        }
+      }
+    },
+    "analytic_check_L2": {
+      "t_win_s": [
+        450.0,
+        650.0
+      ],
+      "n_points": 21,
+      "assumptions": "closed-form lf reaction downstream: ell = s (a = 0), background (rho, f, dv) from the simulated lump peak, per-snapshot rates averaged over the window, amplitude preserved by transport (lump advects at u_s ~ CAV speed), Delta v from the shared road FD; the naive form additionally assumes s << f ~ rho, and resolvability needs the e-fold slow vs the 10 s save cadence and fast vs the CAV-cell seed influx",
+      "amp_first_vehkm": 1.8875790996205744,
+      "amp_last_vehkm": 0.6424560410876832,
+      "s_over_rho_first": 0.08332629191621849,
+      "s_over_rho_last": 0.030055802790862736,
+      "save_cadence_s": 10.0,
+      "rho_ds_vehkm": 22.198408285839655,
+      "f_ds_vehkm": 20.771147046522287,
+      "dv_ds_ms": 12.935598734839372,
+      "lambda_measured_per_s": -0.004940611251465204,
+      "lambda_naive_per_s": 0.55427456386211,
+      "lambda_frozen_f_per_s": -0.01404451739073446,
+      "efold_measured_s": null,
+      "efold_naive_s": 1.8041600051644722,
+      "efold_frozen_f_s": null,
+      "status": "linear regime unresolvable: predicted e-fold 1.8 s is below the 10 s save cadence, so s reaches its local equilibrium between saves and the measured amplitude tracks the quasi-steady wedge, not the linear mode"
+    },
+    "exactness_check_L3_L4": {
+      "L3": {
+        "ds_max_s_vehkm": 0.0,
+        "exact_zero": true
+      },
+      "L4": {
+        "ds_max_s_vehkm": 0.0,
+        "exact_zero": true
+      }
+    },
+    "guard": {
+      "applies": true,
+      "w1_optimal_rung": "L2",
+      "w1_unconstrained": 146.70978360455027,
+      "s_layer_optimal_m": 7367.0,
+      "guard_threshold_m": 1500.0,
+      "anchored_rungs": [
+        "L2anc",
+        "L3anc"
+      ],
+      "anchored_rung": "L2anc",
+      "conflict": true,
+      "candidates": {
+        "L0": {
+          "W1": 182.95250643071228,
+          "s_layer_max_m": 4967.0,
+          "s_layer_mean_m": 4257.0
+        },
+        "L1": {
+          "W1": 157.23400622820134,
+          "s_layer_max_m": 6367.0,
+          "s_layer_mean_m": 5450.333333333333
+        },
+        "L2": {
+          "W1": 146.70978360455027,
+          "s_layer_max_m": 7367.0,
+          "s_layer_mean_m": 6317.0
+        },
+        "L2anc": {
+          "W1": 186.23966859876325,
+          "s_layer_max_m": 1667.0,
+          "s_layer_mean_m": 1390.3333333333333
+        },
+        "L3": {
+          "W1": 159.2869155368652,
+          "s_layer_max_m": 5267.0,
+          "s_layer_mean_m": 4503.666666666667
+        },
+        "L3anc": {
+          "W1": 198.8020442190784,
+          "s_layer_max_m": 2067.0,
+          "s_layer_mean_m": 1717.0
+        },
+        "L4": {
+          "W1": 154.15602469140535,
+          "s_layer_max_m": 7267.0,
+          "s_layer_mean_m": 6217.0
+        }
+      },
+      "resolution": "CONFLICT: no rung satisfies both demands; picked L2anc (no rung meets the 1.5 km bound on the max-reach measure; picked the thinnest layer): s-layer max 1667 m / snapshot-mean 1390 m vs the 1500 m bound, W1 186.2 = +26.9% vs unconstrained 146.7 (L2, s-layer max 7367 m)"
+    },
+    "pick": "L2anc",
+    "pick_caveat": "final pick L2anc carries no downstream_release and re-leaks stuck vehicles downstream: stuck fraction 5.8% at t=700 s, max downstream s 24.4 veh/km",
+    "pick_rule": "min W1 among rungs = L2 (W1=146.7); A=10 guard moved the pick to L2anc",
+    "pick_transfer_q2000": {
+      "W1": 105.07736526912167,
+      "RMSE": 2.866866365003809,
+      "e_s": -0.028965016708686408,
+      "omega_err": -0.1257386315214112,
+      "wake": {
+        "wake_mean_vehkm": 28.222436451837073,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "ds_stuck": {
+        "frac": 0.05069774911510004,
+        "s_veh": 7.8942376557997225,
+        "t_s": 700.0
+      },
+      "waviness_sim": {
+        "std_vehkm": 0.9191543209145,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.0,
+        "overtake_zone_vehkm": 16.583669860049365,
+        "background_vehkm": 19.8870108648398,
+        "band_lo_vehkm": 20.583669860049365,
+        "band_hi_vehkm": 15.887010864839802,
+        "band_nonempty": false,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 600.0,
+        "width_960_m": 0.0,
+        "width_growth_m": -600.0,
+        "peak_780_vehkm": 44.19808494281992,
+        "peak_960_vehkm": 34.78625581442277,
+        "peak_decay_vehkm_per_s": 0.05228793960220636,
+        "rarefaction_present": false
+      },
+      "s_layer": {
+        "max_m": 1267.0,
+        "mean_m": 1103.6666666666667,
+        "n_snapshots": 15
+      },
+      "ds_max_s_vehkm": 21.73570517489138
+    },
+    "data_refs_q2000": {
+      "wake": {
+        "wake_mean_vehkm": 25.852733608881632,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "waviness": {
+        "std_vehkm": 1.013128058895268,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.0,
+        "overtake_zone_vehkm": 18.383718681335452,
+        "background_vehkm": 19.8870108648398,
+        "band_lo_vehkm": 22.383718681335452,
+        "band_hi_vehkm": 15.887010864839802,
+        "band_nonempty": false,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 300.0,
+        "width_960_m": 0.0,
+        "width_growth_m": -300.0,
+        "peak_780_vehkm": 39.29708557128906,
+        "peak_960_vehkm": 27.41172676086426,
+        "peak_decay_vehkm_per_s": 0.06602977116902667,
+        "rarefaction_present": false
+      }
+    }
+  }
+}

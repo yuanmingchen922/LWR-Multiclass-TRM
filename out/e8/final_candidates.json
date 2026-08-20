@@ -1,0 +1,92 @@
+{
+  "A1_C3_DR": {
+    "W1": 228.0580294115332,
+    "RMSE": 7.387061775719783,
+    "e_s": 0.3724126594602539,
+    "omega_err": 0.41707978551620634,
+    "wake": {
+      "wake_mean_vehkm": 34.50613349644795,
+      "supercritical": false,
+      "n_snapshots": 15
+    },
+    "ds_stuck": {
+      "frac": 0.0,
+      "s_veh": 0.0,
+      "t_s": 700.0
+    },
+    "waviness_sim": {
+      "std_vehkm": 0.631629405054024,
+      "n_snapshots": 35
+    },
+    "wedge": {
+      "frac": 0.0,
+      "overtake_zone_vehkm": 23.176034164641205,
+      "background_vehkm": 24.858763581049747,
+      "band_lo_vehkm": 27.176034164641205,
+      "band_hi_vehkm": 20.858763581049747,
+      "band_nonempty": false,
+      "n_cells": 45,
+      "t_s": 600.0
+    },
+    "rarefaction": {
+      "width_780_m": 700.0,
+      "width_960_m": 0.0,
+      "width_growth_m": -700.0,
+      "peak_780_vehkm": 46.81203456876368,
+      "peak_960_vehkm": 32.92674394111985,
+      "peak_decay_vehkm_per_s": 0.07714050348691015,
+      "rarefaction_present": false
+    },
+    "s_layer": {
+      "max_m": 1567.0,
+      "mean_m": 1337.0,
+      "n_snapshots": 15
+    },
+    "ds_max_s_vehkm": 0.0
+  },
+  "A10_L2anc_DR": {
+    "W1": 252.07250390746708,
+    "RMSE": 5.253623656093469,
+    "e_s": 0.25910495214032875,
+    "omega_err": 0.23198198063238085,
+    "wake": {
+      "wake_mean_vehkm": 31.558943099930175,
+      "supercritical": false,
+      "n_snapshots": 15
+    },
+    "ds_stuck": {
+      "frac": 0.0,
+      "s_veh": 0.0,
+      "t_s": 700.0
+    },
+    "waviness_sim": {
+      "std_vehkm": 0.5324055569221049,
+      "n_snapshots": 35
+    },
+    "wedge": {
+      "frac": 0.0,
+      "overtake_zone_vehkm": 23.589432718899765,
+      "background_vehkm": 24.858763581049747,
+      "band_lo_vehkm": 27.589432718899765,
+      "band_hi_vehkm": 20.858763581049747,
+      "band_nonempty": false,
+      "n_cells": 45,
+      "t_s": 600.0
+    },
+    "rarefaction": {
+      "width_780_m": 400.0,
+      "width_960_m": 0.0,
+      "width_growth_m": -400.0,
+      "peak_780_vehkm": 38.00000097459802,
+      "peak_960_vehkm": 31.322972021045373,
+      "peak_decay_vehkm_per_s": 0.03709460529751468,
+      "rarefaction_present": false
+    },
+    "s_layer": {
+      "max_m": 1467.0,
+      "mean_m": 1237.0,
+      "n_snapshots": 15
+    },
+    "ds_max_s_vehkm": 0.0
+  }
+}

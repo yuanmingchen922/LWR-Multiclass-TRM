@@ -149,6 +149,26 @@ at or below the classical LWR+MB baseline almost everywhere. See `E7_results.md`
 
 ![Speed transfer curve](out/e7/fig_transfer_curve.png)
 
+**Step 10 — The downstream-release constraint and the final hybrid (E8).**
+Third review round. We added the zero-parameter *downstream-release* constraint
+(a vehicle cannot be caught by a bottleneck behind it: s strictly downstream of
+the CAV converts to f) and ran the one-at-a-time ladder Mladen asked for. Two
+findings: (i) the previous fit's leaked downstream stuck vehicles had been
+acting as a *plug* that throttled the bottleneck — removing them uncorks the
+flow (omega error jumps to +42%), proving that catch & release alone cannot both
+keep the downstream clean and throttle the bottleneck: the capacity term is
+structurally necessary. (ii) The free-flow "waviness" has a closed form — the
+source growth rate is exactly Delta-v (kappa_c rho - kappa_r (P - rho)),
+k-independent; under the constraint the downstream source vanishes identically,
+so waviness in free flow is impossible while congestion waves remain allowed.
+Final model = capacity cap + catch & release + downstream release
+(+ the stuck-class branch w_s): A=1 gets a supercritical wake on the data
+plateau, a matching rarefaction fan, clean downstream, omega error -2.5%;
+A=10 gets e_s = +0.2% with kappa_r landing on the event-measured value.
+See `E8_results.md`.
+
+![Final hybrid vs data vs classical](out/e8/fig_profiles_final_A1_u15_q2500.png)
+
 ---
 
 ## How to run
@@ -171,6 +191,8 @@ python3 e6_native_mb.py          # E6: native-MB fit + 3-model comparison -> out
 python3 e7_wasserstein.py --selftest  # E7: W1 metric gate
 python3 e7_ablation.py           # E7: W1/gamma/w_s ablation -> out/e7/
 python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
+python3 e8_ladder.py --run       # E8: one-at-a-time ladder -> out/e8/
+python3 e8_final.py              # E8: final hybrid figures + config
 ```
 
 ## File guide
@@ -199,6 +221,8 @@ python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
 | `e7_wasserstein.py` | **E7**: 1-Wasserstein calibration infrastructure (cumulative-density metric with a synthetic exactness gate) and the generic field-fit machinery. |
 | `e7_ablation.py` | **E7**: RMSE-vs-W1 and structural-knob ablation (gamma, w_s), wake-density / rarefaction / dynamic-equilibrium diagnostics, winner figures. |
 | `e7_transfer.py` | **E7**: speed-transfer study — kappas fitted at u=15 predicting u=10…24, vs the classical baseline. |
+| `e8_ladder.py` | **E8**: one-at-a-time ablation ladder (metric / w_s / downstream-release), waviness and wake diagnostics, analytic growth checks. |
+| `e8_final.py` | **E8**: final hybrid configuration (cap + w_s + downstream release) — figures and summary. |
 
 ### Tests and independent audits
 
@@ -209,6 +233,7 @@ python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
 | `audit_cap.py` | Independent audit of the capacity cap: inertness when disabled, conservation with the cap active, analytic steady state re-derived by bisection, sign guards. |
 | `audit_dispersion.py` | Independent sympy re-derivation of all Jacobians and the dispersion relation; compares against the module to machine precision (exit 0 = pass). |
 | `audit_e7.py` | Independent audit of the gamma/w_s/P_s solver knobs (bit-identity, invariants, cap-path regression). |
+| `audit_e8.py` | Independent audit of the downstream-release constraint (bit-identity vs git, boundary semantics, invariants). |
 
 ### Reports (read these for the full story)
 
@@ -220,6 +245,7 @@ python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
 | `E_V4b_V5_results.md` | Capacity-cap results, the A-dependence of the bottleneck capacity, the dispersion theorem, the wave spectra, and the model-vs-data closure. |
 | `E6_results.md` | The native moving-bottleneck result: field-calibrated catch & release vs classical LWR+MB, the two-stream interpretation, and the honest trade-offs. |
 | `E7_results.md` | Wasserstein calibration, the stuck-class flux function fix (supercritical wake + restored rarefaction), the A=10 dynamic-equilibrium verdict, and the speed-transfer study. |
+| `E8_results.md` | The downstream-release constraint, the plug discovery (why the capacity term is structurally necessary), the closed-form no-waviness condition, and the final hybrid configuration. |
 
 ### Outputs (`out/`)
 
@@ -233,6 +259,7 @@ python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
 | `ev5/` | Dispersion summary + stability maps, wave-spectra summary + figures, model-vs-data spectra. |
 | `e6/` | Native-MB fit results, three-model metrics, heatmap and profile comparison figures. |
 | `e7/` | Ablation table, transfer curve + JSON, winner profile/heatmap figures (incl. the t=850 post-release panel). |
+| `e8/` | Ladder JSON, hybrid/candidate evaluations, final-configuration figures. |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas

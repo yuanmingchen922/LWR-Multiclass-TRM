@@ -49,20 +49,6 @@ Structural knobs (all default to None = exact legacy behavior, bit-for-bit):
   the shared road FD.  Requires w_s <= w and P_s <= P (asserted at config
   time); see transport_step for the invariant-domain proof.
 
-* downstream_release (bool, default False = legacy): the DEFINITIONAL
-  downstream-release constraint -- a vehicle cannot be caught by a
-  bottleneck that is BEHIND it.  When True, at every step while the CAV is
-  on the road (x_cav finite), immediately after the reaction substep every
-  cell strictly downstream of the CAV cell (j > j_cav, j_cav =
-  int(x_cav // dx)) converts its s to f: f += s, s = 0.  It applies in all
-  phases (slow and fast), carries no parameters, and conserves p = f + s
-  trivially (per-cell f + s is untouched), so all reaction/transport
-  invariants are unchanged.  Without it, kappa_r-released s that drifts
-  past the CAV keeps exchanging with f downstream (wrong downstream
-  density, an intermediate-density wedge travelling at u_s < v_f, and the
-  R1 dispersion 'waviness' with growth rate Dv (kappa_c rho - kappa_r
-  (P - rho)) > 0).
-
 Units: SI throughout (veh/m, m/s, veh/s).  kappa_c, kappa_r are per-vehicle
 [1/veh] and unit-consistent in SI without conversion.
 """
@@ -137,10 +123,6 @@ class SimConfig:
     #                               None = shared road w (legacy)
     P_s: float | None = None      # s-class jam density [veh/m];
     #                               None = shared road P (legacy)
-    downstream_release: bool = False  # definitional constraint: s strictly
-    #                               downstream of the CAV cell converts to f
-    #                               after each reaction substep while the CAV
-    #                               is on road; False = legacy, bit-for-bit
 
     def __post_init__(self) -> None:
         if self.w_s is not None:
@@ -443,18 +425,6 @@ def simulate(cfg: SimConfig) -> SimResult:
         f, s = reaction_exact(f, s, a_star, rho_star, dv, cfg.kappa_c,
                               cfg.kappa_r, cfg.P, cfg.dt, cfg.capture_form,
                               cfg.gamma)
-        # Downstream-release constraint (definitional, zero parameters): a
-        # vehicle cannot be caught by a bottleneck that is behind it, so s
-        # strictly downstream of the CAV cell converts to f immediately.
-        # Evaluated at t + dt, the time of the post-reaction state (and of
-        # a_star), in all phases while the CAV is on the road.  Per-cell
-        # p = f + s is untouched, so conservation is trivially exact.
-        if cfg.downstream_release:
-            x_c = cav_position(cfg, t + cfg.dt)
-            if np.isfinite(x_c):
-                j_cav = int(x_c // cfg.dx)
-                f[j_cav + 1:] += s[j_cav + 1:]
-                s[j_cav + 1:] = 0.0
     _save(n_steps)
 
     t_arr = np.array([sv[0] for sv in saves])

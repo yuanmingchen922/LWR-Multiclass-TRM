@@ -1,0 +1,104 @@
+{
+  "_meta": {
+    "structure": "q_xi_max=2000 veh/h + w_s=0.6w + downstream_release + W1-fitted (kappa_c, kappa_r); lf capture form",
+    "fit": "u15_q2500 rep-mean field, 1-Wasserstein objective"
+  },
+  "A1_u15_q2500": {
+    "kappa_c": 0.05323,
+    "kappa_r": 0.001654,
+    "summary": {
+      "W1": 152.1794556617819,
+      "RMSE": 4.6131456376794375,
+      "e_s": 0.04690385959548586,
+      "omega_err": -0.0251914069449742,
+      "wake": {
+        "wake_mean_vehkm": 53.82490635220009,
+        "supercritical": true,
+        "n_snapshots": 15
+      },
+      "ds_stuck": {
+        "frac": 0.0,
+        "s_veh": 0.0,
+        "t_s": 700.0
+      },
+      "waviness_sim": {
+        "std_vehkm": 1.3679879177423386,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.044444444444444446,
+        "overtake_zone_vehkm": 15.418235088601534,
+        "background_vehkm": 24.858763581049747,
+        "band_lo_vehkm": 19.418235088601534,
+        "band_hi_vehkm": 20.858763581049747,
+        "band_nonempty": true,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 1900.0,
+        "width_960_m": 2200.0,
+        "width_growth_m": 300.0,
+        "peak_780_vehkm": 68.06362978907192,
+        "peak_960_vehkm": 49.07598362481836,
+        "peak_decay_vehkm_per_s": 0.105486923134742,
+        "rarefaction_present": true
+      },
+      "s_layer": {
+        "max_m": 2067.0,
+        "mean_m": 1717.0,
+        "n_snapshots": 15
+      },
+      "ds_max_s_vehkm": 0.0
+    }
+  },
+  "A10_u15_q2500": {
+    "kappa_c": 0.1664,
+    "kappa_r": 0.01399,
+    "summary": {
+      "W1": 167.38218507687634,
+      "RMSE": 5.6246799457372605,
+      "e_s": 0.0015752637184296425,
+      "omega_err": -0.18319892119834122,
+      "wake": {
+        "wake_mean_vehkm": 47.69586041631114,
+        "supercritical": false,
+        "n_snapshots": 15
+      },
+      "ds_stuck": {
+        "frac": 0.0,
+        "s_veh": 0.0,
+        "t_s": 700.0
+      },
+      "waviness_sim": {
+        "std_vehkm": 1.5261173006939341,
+        "n_snapshots": 35
+      },
+      "wedge": {
+        "frac": 0.0,
+        "overtake_zone_vehkm": 17.4381451865268,
+        "background_vehkm": 24.858763581049747,
+        "band_lo_vehkm": 21.4381451865268,
+        "band_hi_vehkm": 20.858763581049747,
+        "band_nonempty": false,
+        "n_cells": 45,
+        "t_s": 600.0
+      },
+      "rarefaction": {
+        "width_780_m": 2100.0,
+        "width_960_m": 1800.0,
+        "width_growth_m": -300.0,
+        "peak_780_vehkm": 53.676287939070974,
+        "peak_960_vehkm": 45.77669119528791,
+        "peak_decay_vehkm_per_s": 0.04388664857657258,
+        "rarefaction_present": false
+      },
+      "s_layer": {
+        "max_m": 2167.0,
+        "mean_m": 1863.6666666666667,
+        "n_snapshots": 15
+      },
+      "ds_max_s_vehkm": 0.0
+    }
+  }
+}

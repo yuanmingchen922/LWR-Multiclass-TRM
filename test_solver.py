@@ -502,6 +502,122 @@ def test_ws_slow_wake_wedge():
 
 
 # --------------------------------------------------------------------------
+# 14-16. Downstream-release constraint (definitional, zero parameters)
+# --------------------------------------------------------------------------
+
+def _dsr_cfg(**kw) -> SimConfig:
+    """E7-winner-like A1 config for the downstream-release tests:
+    kappa_c = 0.046, kappa_r = 5.7e-4, lf, w_s = 0.6 w, u15, q2500,
+    production dt = 0.5 / save_every = 20."""
+    d = dict(kappa_c=0.046, kappa_r=5.7e-4, capture_form="lf", u_xi=15.0,
+             q_in=2500.0 / 3600.0, dt=0.5, save_every=20, w_s=0.6 * W)
+    d.update(kw)
+    return base_cfg(**d)
+
+
+def _downstream_mask(res, i):
+    """Cells strictly downstream of the CAV cell at saved index i
+    (j > j_cav, j_cav = int(x_cav // dx)) -- the cells the constraint
+    empties of s."""
+    dx = res.x[1] - res.x[0]
+    j_cav = int(res.x_cav[i] // dx)
+    return np.arange(res.x.size) > j_cav
+
+
+def test_dsr_disabled_bit_identical():
+    """t14: downstream_release=False (default) reproduces the PRE-change
+    solver bit for bit (reference out/dsr_ref_A1.npz was generated from the
+    solver BEFORE the flag existed)."""
+    ref_path = HERE / "out" / "dsr_ref_A1.npz"
+    assert ref_path.exists(), (
+        "missing pre-change reference out/dsr_ref_A1.npz -- it must be "
+        "generated with the PRE-flag solver, not recreated here")
+    res = simulate(_dsr_cfg())
+    _assert_bit_equal(res, np.load(ref_path),
+                      "downstream_release=False vs pre-change")
+    print("  downstream_release=False: f, s, N_s, omega bit-identical to "
+          "the stored pre-change reference")
+
+
+def test_dsr_downstream_zero_and_invariants():
+    """t15: with the constraint on, s is exactly 0 strictly downstream of
+    the CAV cell at every saved time while the CAV is on road, and all
+    invariants hold (ledger closes to 1e-10, f, s >= 0, rho <= P)."""
+    res = simulate(_dsr_cfg(downstream_release=True))
+
+    n_checked = 0
+    for i in range(res.t.size):
+        if not np.isfinite(res.x_cav[i]):
+            continue
+        s_down = res.s[i][_downstream_mask(res, i)]
+        assert np.all(s_down == 0.0), (
+            f"s not exactly 0 downstream of the CAV at t = {res.t[i]:g} "
+            f"(max {s_down.max():.3e})")
+        n_checked += 1
+    assert n_checked > 0, "CAV never on road at a saved time?"
+
+    balance = res.on_road + res.outflowed
+    rel = abs(res.injected - balance) / max(res.injected, 1.0)
+    rho = res.a + res.f + res.s
+    print(f"  s == 0 strictly downstream of the CAV at all {n_checked} "
+          f"on-road saves; ledger rel err {rel:.2e}, "
+          f"min f {res.f.min():.3e}, min s {res.s.min():.3e}, "
+          f"max rho {rho.max():.6f} (P = {P:.6f})")
+    assert rel < 1e-10, "mass ledger not closed with downstream_release"
+    assert res.f.min() >= 0.0 and res.s.min() >= 0.0
+    assert rho.max() <= P + 1e-12, "rho exceeded jam density"
+
+
+def test_dsr_stuck_fraction_and_waviness():
+    """t16: same config as t14, False vs True.  Reports (a) the t = 700
+    downstream stuck fraction integral(s)/integral(rho) over the cells
+    strictly downstream of the CAV (expected ~0.2-0.5 legacy vs exactly 0
+    with the constraint -- the E7-winner leak Mladen diagnosed), and
+    (b) the downstream waviness amplitude = std of linearly-detrended
+    rho_tot over x in [x_cav + 0.5 km, x_cav + 5 km] at t = 600 (expected
+    visible drop; both numbers reported, no hard threshold -- only the
+    direction is asserted)."""
+    res_f = simulate(_dsr_cfg())
+    res_t = simulate(_dsr_cfg(downstream_release=True))
+
+    # (a) t = 700 downstream stuck fraction
+    i700 = int(np.argmin(np.abs(res_f.t - 700.0)))
+    assert np.isfinite(res_f.x_cav[i700])
+
+    def stuck(res):
+        m = _downstream_mask(res, i700)
+        rho = (res.a[i700] + res.f[i700] + res.s[i700])[m]
+        return float(res.s[i700][m].sum() / rho.sum())
+
+    st_f, st_t = stuck(res_f), stuck(res_t)
+    print(f"  t=700 downstream stuck fraction: False {st_f:.4f} vs "
+          f"True {st_t:.4f}")
+    assert st_t == 0.0, "stuck fraction not exactly 0 with the constraint"
+    assert 0.05 < st_f < 0.8, (
+        f"legacy stuck fraction {st_f:.4f} outside the expected leak range")
+
+    # (b) t = 600 downstream waviness amplitude
+    i600 = int(np.argmin(np.abs(res_f.t - 600.0)))
+    xc = res_f.x_cav[i600]
+    assert np.isfinite(xc)
+
+    def waviness(res):
+        m = (res.x >= xc + 500.0) & (res.x <= xc + 5000.0)
+        rho = (res.a[i600] + res.f[i600] + res.s[i600])[m]
+        trend = np.polyval(np.polyfit(res.x[m], rho, 1), res.x[m])
+        return float(np.std(rho - trend))
+
+    wv_f, wv_t = waviness(res_f), waviness(res_t)
+    print(f"  t=600 downstream waviness amplitude (std of detrended "
+          f"rho_tot, [x_cav+0.5km, x_cav+5km]): False {wv_f:.3e} vs "
+          f"True {wv_t:.3e} veh/m "
+          f"({wv_f * 1000:.4f} vs {wv_t * 1000:.4f} veh/km)")
+    assert wv_t < wv_f, (
+        "waviness amplitude did not drop with the constraint "
+        f"({wv_t:.3e} >= {wv_f:.3e})")
+
+
+# --------------------------------------------------------------------------
 
 if __name__ == "__main__":
     tests = [
@@ -518,6 +634,11 @@ if __name__ == "__main__":
         ("gamma == capture forms", test_gamma_matches_capture_forms),
         ("w_s=w, P_s=P bit-identity", test_ws_ps_shared_bit_identical),
         ("w_s=0.7w wake wedge", test_ws_slow_wake_wedge),
+        ("downstream release off bit-identity", test_dsr_disabled_bit_identical),
+        ("downstream release zero + invariants",
+         test_dsr_downstream_zero_and_invariants),
+        ("downstream stuck fraction + waviness",
+         test_dsr_stuck_fraction_and_waviness),
     ]
     for name, fn in tests:
         print(f"[{name}]")

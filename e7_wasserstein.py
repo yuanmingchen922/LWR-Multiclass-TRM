@@ -171,7 +171,7 @@ def load_rho_mean(A, uc, qin):
 # ---------------------------------------------------------------------------
 
 def run_sim(uc, qin, kc, kr, form: str = "lf", gamma=None, ws_frac=None,
-            dt: float = 1.0, save_every: int | None = None):
+            dt: float = 1.0, save_every: int | None = None, **extra_cfg):
     """One solver run regridded to the data grid (ev4_compare.regrid_sim).
 
     gamma / ws_frac are the E7c structural knobs (solver.py extension built
@@ -181,6 +181,12 @@ def run_sim(uc, qin, kc, kr, form: str = "lf", gamma=None, ws_frac=None,
     and passes P_s=None (legacy jam density); note the solver asserts
     w_s <= w (invariant domain), i.e. ws_frac <= 1.  With both None the
     SimConfig call is exactly the legacy one (bit-compatibility discipline).
+
+    **extra_cfg (E8): FIXED SimConfig fields forwarded verbatim (e.g.
+    w_s=0.6*W, downstream_release=True).  Each key must name an existing
+    SimConfig field (RuntimeError otherwise) and must not collide with a
+    field this function already sets.  Empty extra_cfg is bit-identical to
+    the pre-E8 behavior.
     """
     import ev4_compare as ev4
     from solver import SimConfig, simulate
@@ -205,6 +211,16 @@ def run_sim(uc, qin, kc, kr, form: str = "lf", gamma=None, ws_frac=None,
         kw["w_s"] = float(ws_frac) * ev4.W
         if "P_s" in have:
             kw["P_s"] = None                  # explicit legacy jam density
+    for name, val in extra_cfg.items():       # E8 fixed-knob passthrough
+        if name not in have:
+            raise RuntimeError(
+                f"solver.SimConfig has no '{name}' field (extra_cfg "
+                "passthrough targets existing SimConfig fields only)")
+        if name in kw:
+            raise RuntimeError(
+                f"extra_cfg key '{name}' collides with a field run_sim "
+                "already sets (use the dedicated argument instead)")
+        kw[name] = val
     return ev4.regrid_sim(simulate(SimConfig(**kw)))
 
 
@@ -229,8 +245,14 @@ def fit_field(A, uc, qin, form: str = "lf", metric: str = "w1",
               extra: dict | None = None, dt_fit: float = 1.0,
               t_win=T_WIN, x_max_cells: int = X_MAX_CELLS,
               kc_grid=None, kr_grid=None, maxfev: int = 40,
-              verbose: bool = True) -> dict:
+              verbose: bool = True,
+              extra_cfg: dict | None = None) -> dict:
     """Fit (kappa_c, kappa_r) [+ extras] to the rep-mean measured field.
+
+    extra_cfg (E8): FIXED SimConfig fields (e.g. w_s=0.6*W,
+    downstream_release=True) forwarded verbatim through run_sim to every
+    fitting/re-eval sim; they are NOT part of the optimization vector.
+    None/empty is bit-identical to the pre-E8 behavior.
 
     Stage 1: log-space coarse grid over kappa_c x kappa_r (default 6x6),
     extras frozen at their interval midpoints.  Stage 2: Nelder-Mead
@@ -270,7 +292,8 @@ def fit_field(A, uc, qin, form: str = "lf", metric: str = "w1",
         nonlocal n_sim
         regr = run_sim(uc, qin, kc, kr, form,
                        gamma=extras.get("gamma"),
-                       ws_frac=extras.get("ws_frac"), dt=dt)
+                       ws_frac=extras.get("ws_frac"), dt=dt,
+                       **(extra_cfg or {}))
         n_sim += 1
         assert np.allclose(regr["tt"], tt_data), "sim/data time grids differ"
         return regr
@@ -332,6 +355,7 @@ def fit_field(A, uc, qin, form: str = "lf", metric: str = "w1",
                 extra={n: float(extras[n]) for n in extra_names},
                 extra_bounds={n: list(map(float, extra[n]))
                               for n in extra_names},
+                extra_cfg=dict(extra_cfg or {}),
                 objective=j_fit, grid_objective=float(j_grid),
                 at_dt_fit=at_fit, at_production=at_prod,
                 n_sim=n_sim, n_polish=int(res.nfev),
