@@ -1,0 +1,161 @@
+
+=== A1 RDR: cap + w_s=0.6w + downstream_release, E8 final kappas re-evaluated (NOT refit; the kludge; reference only, never a winner) ===
+[eval dt=0.5] W1=152.18 RMSE=4.61 e_s=+4.7% om=-2.5% wake=53.8 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+300 m Ns700=56.0 Ns1000=64.2 suw_m=1.02 m/s rel=6% t99=n/a s adm=True | E8 final_config W1 152.18, reproduced=True
+
+=== A1 R0: cap 2000 + w_s=0.6w (leaky reference) ===
+[grid 6x6] w1=152.098 at kappa_c=5.012e-02 kappa_r=2.512e-03 extras={}
+[polish nfev=40] w1=151.876 at kappa_c=5.257e-02 kappa_r=2.857e-03 extras={}
+[re-eval] dt=1: w1=151.876 rmse=4.658 | dt=0.5: w1=150.376 rmse=4.774 (78 sims total)
+[eval dt=0.5] W1=150.38 RMSE=4.77 e_s=+6.6% om=-2.6% wake=54.7 stuckf=0.0042 ds|s|=8.164 (slow 8.164 / post 6.741) rare=+100 m Ns700=53.2 Ns1000=65.0 suw_m=-0.00 m/s rel=-0% t99=n/a s adm=False | fit 78 sims, 3 s
+
+=== A1 R1: R0 + s_impermeable (interface constraint alone) ===
+[grid 6x6] w1=159.177 at kappa_c=5.012e-02 kappa_r=2.512e-03 extras={}
+[polish nfev=40] w1=149.375 at kappa_c=4.457e-02 kappa_r=1.457e-03 extras={}
+[re-eval] dt=1: w1=149.375 rmse=4.669 | dt=0.5: w1=151.958 rmse=4.534 (78 sims total)
+[eval dt=0.5] W1=151.96 RMSE=4.53 e_s=+3.9% om=-2.5% wake=55.1 stuckf=0.0000 ds|s|=5.464 (slow 0.000 / post 5.464) rare=+300 m Ns700=53.0 Ns1000=67.5 suw_m=-0.00 m/s rel=-0% t99=n/a s adm=False | fit 78 sims, 3 s
+
+=== A1 R2: R1 + connect-LL (eta_la 200 m, tau_ll 3 s): the E10 model ===
+[grid 6x6] w1=173.006 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=172.998 at kappa_c=4.919e-15 kappa_r=1.677e+02 extras={}
+[re-eval] dt=1: w1=172.998 rmse=7.052 | dt=0.5: w1=173.741 rmse=6.865 (78 sims total)
+[eval dt=0.5] W1=173.74 RMSE=6.86 e_s=+5.8% om=-2.5% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=n/a m/s rel=n/a t99=n/a s adm=True | fit 78 sims, 5 s
+
+=== A1 R3: R0 + connect-LL only, no impermeable face (does LL alone suffice?) ===
+[grid 6x6] w1=163.182 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=161.796 at kappa_c=1.880e-01 kappa_r=1.241e-02 extras={}
+[re-eval] dt=1: w1=161.796 rmse=5.212 | dt=0.5: w1=160.157 rmse=5.147 (78 sims total)
+[eval dt=0.5] W1=160.16 RMSE=5.15 e_s=+10.9% om=-9.0% wake=43.2 stuckf=0.0003 ds|s|=2.819 (slow 2.819 / post 0.097) rare=-100 m Ns700=65.2 Ns1000=0.0 suw_m=75.30 m/s rel=100% t99=20 s adm=False | fit 78 sims, 7 s
+
+=== A1 R4: R2 without w_s (is w_s still needed?) ===
+[grid 6x6] w1=171.956 at kappa_c=5.012e-02 kappa_r=2.512e-03 extras={}
+[polish nfev=40] w1=170.787 at kappa_c=4.353e-02 kappa_r=1.582e-04 extras={}
+[re-eval] dt=1: w1=170.787 rmse=6.418 | dt=0.5: w1=169.575 rmse=6.429 (78 sims total)
+[eval dt=0.5] W1=169.58 RMSE=6.43 e_s=+0.3% om=-8.4% wake=69.5 stuckf=0.0000 ds|s|=0.248 (slow 0.000 / post 0.248) rare=+800 m Ns700=21.7 Ns1000=0.0 suw_m=29.24 m/s rel=100% t99=20 s adm=True | fit 78 sims, 6 s
+
+=== A1 R5: R2 with tau_ll = 10 s (sensitivity) ===
+[grid 6x6] w1=173.006 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=172.998 at kappa_c=4.919e-15 kappa_r=1.677e+02 extras={}
+[re-eval] dt=1: w1=172.998 rmse=7.052 | dt=0.5: w1=173.741 rmse=6.865 (78 sims total)
+[eval dt=0.5] W1=173.74 RMSE=6.86 e_s=+5.8% om=-2.5% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=n/a m/s rel=n/a t99=n/a s adm=True | fit 78 sims, 6 s
+
+=== A1 R6: R2 with eta_la = 400 m (sensitivity) ===
+[grid 6x6] w1=173.006 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=172.998 at kappa_c=4.919e-15 kappa_r=1.677e+02 extras={}
+[re-eval] dt=1: w1=172.998 rmse=7.052 | dt=0.5: w1=173.741 rmse=6.865 (78 sims total)
+[eval dt=0.5] W1=173.74 RMSE=6.86 e_s=+5.8% om=-2.5% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=n/a m/s rel=n/a t99=n/a s adm=True | fit 78 sims, 6 s
+
+[A1] admissible ['R2', 'R4', 'R5', 'R6'], degenerate ['R2', 'R5', 'R6'], candidates ['R4']; winner = R4 (W1=169.6); unconstrained min-W1 rung = R0 (W1=150.4, admissible=False)
+[A1] NOTE: impermeable rung R1 is NOT admissible (fails ['ds_max_s']): max ds s slow window 0.000, post-t_fast 5.464 veh/km
+[A1 verdict] R2 vs RDR: W1 173.7 vs 152.2 (+14.2%: worse); wake 68.4 vs 53.8 veh/km (data 58.6: worse); rarefaction growth +800 vs +300 m (data +1200: beat); e_s +5.8% vs +4.7% (match); omega err -2.5% vs -2.5% (match); downstream: stuck 0.0000 (RDR 0.0000), max s 0.00 (RDR 0.00) -> ADMISSIBLE; start-up wave n/a m/s, n/a of N_s released over [760,900] s (RDR 1.02 m/s, 6%); queue gone (1%) n/a s after t_fast (RDR n/a); N_s(1000) 0.0 vs 64.2 veh => 1 beat / 2 match / 2 worse of 5 -> does NOT match the kludge on W1, wake_vehkm
+[A1 verdict] R4 vs RDR: W1 169.6 vs 152.2 (+11.4%: worse); wake 69.5 vs 53.8 veh/km (data 58.6: worse); rarefaction growth +800 vs +300 m (data +1200: beat); e_s +0.3% vs +4.7% (beat); omega err -8.4% vs -2.5% (worse); downstream: stuck 0.0000 (RDR 0.0000), max s 0.25 (RDR 0.00) -> ADMISSIBLE; start-up wave 29.24 m/s, 100% of N_s released over [760,900] s (RDR 1.02 m/s, 6%); queue gone (1%) 20 s after t_fast (RDR n/a); N_s(1000) 0.0 vs 64.2 veh => 2 beat / 0 match / 3 worse of 5 -> does NOT match the kludge on W1, wake_vehkm, omega_err
+[A1 (i)] R1 (interface alone): slow-window downstream s 0.000 veh/km (R0 8.16), ds_stuck(700) 0.0000 (R0 0.0042) -> the plume while the bottleneck is active is ELIMINATED (exactly, by construction); the plug (leaked s throttling the bottleneck) is gone with it: omega err -2.5% (R0 -2.6%), e_s +3.9% (R0 +6.6%), W1 152.0 (R0 150.4), wake 55.1 (R0 54.7). BUT after t_fast: max downstream s 5.46 veh/km, N_s(700) 53.0 -> N_s(1000) 67.5 veh, released 0% over [760,900] s, queue gone (1%) n/a s after t_fast: with no release mechanism (Delta v = 0 after t_fast) the platoon never dissolves and rides past the free-driving CAV, so R1 is NOT admissible (fails ['ds_max_s'] on the post-t_fast window, not on the interface)
+[A1 w_s?] w_s NOT needed on W1: R4 W1 169.6 <= R2 W1 173.7 (R4 admissible=True)
+[A1 sensitivity] R2 (cap + w_s=0.6w + s-impermeable + connect-LL(eta 200 m, tau 3 s)): W1 173.7, wake 68.4, rare +800 m, t99 n/a s, ds post 0.00, adm=True; R5 (cap + w_s=0.6w + s-impermeable + connect-LL(eta 200 m, tau 10 s)): W1 173.7, wake 68.4, rare +800 m, t99 n/a s, ds post 0.00, adm=True; R6 (cap + w_s=0.6w + s-impermeable + connect-LL(eta 400 m, tau 3 s)): W1 173.7, wake 68.4, rare +800 m, t99 n/a s, ds post 0.00, adm=True
+[A1] transfer q2000 R0  : W1=143.57 RMSE=2.82 e_s=+2.8% om=-11.0% wake=36.6 stuckf=0.0194 ds|s|=17.945 (slow 17.945 / post 11.877) Ns700=28.4 rel=-0% adm=False
+[A1] transfer q2000 R1  : W1=161.08 RMSE=2.96 e_s=-6.0% om=-13.2% wake=46.9 stuckf=0.0000 ds|s|=8.019 (slow 0.000 / post 8.019) Ns700=36.7 rel=-0% adm=False
+[A1] transfer q2000 R2  : W1=146.54 RMSE=4.12 e_s=+3.5% om=-6.2% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=n/a adm=True
+[A1] transfer q2000 R3  : W1=142.31 RMSE=3.47 e_s=+5.4% om=-6.3% wake=38.7 stuckf=0.0003 ds|s|=2.180 (slow 2.180 / post 0.106) Ns700=27.1 rel=100% adm=False
+[A1] transfer q2000 R4  : W1=158.40 RMSE=3.71 e_s=-11.6% om=-23.5% wake=51.1 stuckf=0.0000 ds|s|=0.278 (slow 0.000 / post 0.278) Ns700=38.0 rel=100% adm=True  <- winner
+[A1] transfer q2000 R5  : W1=146.54 RMSE=4.12 e_s=+3.5% om=-6.2% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=n/a adm=True
+[A1] transfer q2000 R6  : W1=146.54 RMSE=4.12 e_s=+3.5% om=-6.2% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=n/a adm=True
+[A1] transfer q2000 RDR : W1=146.70 RMSE=2.63 e_s=+1.8% om=-6.2% wake=40.8 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=30.3 rel=13% adm=True
+
+===== E10 ladder A1 (u15 q2500 lf, W1 fit) =====
+data refs: wake=58.6 veh/km, waviness=2.21 veh/km, wedge_frac=0.044, rarefaction_growth=+1200 m
+rung    kappa_c   kappa_r     W1  RMSE     e_s  om_err  wake  stuckf  ds|s| dsslow dspost  wavi wedge rare_m slayer Ns700 Ns1000  suw_m  rel%  t99 adm
+R0    5.257e-02 2.857e-03  150.4  4.77   +6.6%   -2.6%  54.7  0.0042   8.16   8.16   6.74  1.34 0.022   +100   1967  53.2   65.0  -0.00     0  n/a  NO
+R1    4.457e-02 1.457e-03  152.0  4.53   +3.9%   -2.5%  55.1  0.0000   5.46   0.00   5.46  1.38 0.044   +300   1967  53.0   67.5  -0.00     0  n/a  NO
+R2    4.919e-15 1.677e+02  173.7  6.86   +5.8%   -2.5%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0    nan   nan  n/a deg
+R3    1.880e-01 1.241e-02  160.2  5.15  +10.9%   -9.0%  43.2  0.0003   2.82   2.82   0.10  1.07 0.000   -100   2467  65.2    0.0  75.30   100   20  NO
+R4  * 4.353e-02 1.582e-04  169.6  6.43   +0.3%   -8.4%  69.5  0.0000   0.25   0.00   0.25  1.51 0.044   +800    967  21.7    0.0  29.24   100   20 yes
+R5    4.919e-15 1.677e+02  173.7  6.86   +5.8%   -2.5%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0    nan   nan  n/a deg
+R6    4.919e-15 1.677e+02  173.7  6.86   +5.8%   -2.5%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0    nan   nan  n/a deg
+RDR   5.323e-02 1.654e-03  152.2  4.61   +4.7%   -2.5%  53.8  0.0000   0.00   0.00   0.00  1.37 0.044   +300   2067  56.0   64.2   1.02     6  n/a yes
+  ds|s| = max downstream s, all snapshots (E8 admissibility metric); dsslow / dspost = the same restricted to [t_slow,t_fast] / t > t_fast [veh/km];
+  suw_m = E9 mass-based start-up-wave speed -(dN_s/dt)/max_x s over [760,900] s [m/s]; rel% = share of N_s released there (ill-conditioned when the queue is gone before 760 s); t99 = time after t_fast for N_s to fall below 1% of N_s(t_fast) [s, 10 s cadence; n/a = never];
+  adm = ds_stuck<=0.01 AND ds|s|<=1 (deg = N_s(700) < 1 veh, excluded); * = winner; RDR = E8 final kappas, not refit
+
+=== A10 RDR: cap + w_s=0.6w + downstream_release, E8 final kappas re-evaluated (NOT refit; the kludge; reference only, never a winner) ===
+[eval dt=0.5] W1=167.38 RMSE=5.62 e_s=+0.2% om=-18.3% wake=47.7 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=-300 m Ns700=54.4 Ns1000=56.1 suw_m=0.69 m/s rel=4% t99=n/a s adm=True | E8 final_config W1 167.38, reproduced=True
+
+=== A10 R0: cap 2000 + w_s=0.6w (leaky reference) ===
+[grid 6x6] w1=182.105 at kappa_c=3.162e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=172.288 at kappa_c=2.925e-01 kappa_r=4.157e-02 extras={}
+[re-eval] dt=1: w1=172.288 rmse=5.551 | dt=0.5: w1=172.789 rmse=5.000 (78 sims total)
+[eval dt=0.5] W1=172.79 RMSE=5.00 e_s=+4.3% om=-18.3% wake=55.7 stuckf=0.0016 ds|s|=3.595 (slow 3.595 / post 2.526) rare=+500 m Ns700=32.3 Ns1000=35.9 suw_m=-0.00 m/s rel=-0% t99=n/a s adm=False | fit 78 sims, 3 s
+
+=== A10 R1: R0 + s_impermeable (interface constraint alone) ===
+[grid 6x6] w1=188.014 at kappa_c=1.995e-02 kappa_r=1.000e-04 extras={}
+[polish nfev=40] w1=177.469 at kappa_c=3.161e-02 kappa_r=1.275e-05 extras={}
+[re-eval] dt=1: w1=177.469 rmse=6.397 | dt=0.5: w1=180.098 rmse=6.493 (78 sims total)
+[eval dt=0.5] W1=180.10 RMSE=6.49 e_s=-5.9% om=-18.3% wake=60.7 stuckf=0.0000 ds|s|=0.056 (slow 0.000 / post 0.056) rare=+100 m Ns700=31.9 Ns1000=44.4 suw_m=-0.00 m/s rel=-0% t99=n/a s adm=True | fit 78 sims, 3 s
+
+=== A10 R2: R1 + connect-LL (eta_la 200 m, tau_ll 3 s): the E10 model ===
+[grid 6x6] w1=190.098 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=190.088 at kappa_c=3.326e-13 kappa_r=7.465e+01 extras={}
+[re-eval] dt=1: w1=190.088 rmse=6.496 | dt=0.5: w1=190.352 rmse=6.552 (78 sims total)
+[eval dt=0.5] W1=190.35 RMSE=6.55 e_s=-5.6% om=-18.3% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=0.57 m/s rel=33% t99=n/a s adm=True | fit 78 sims, 5 s
+
+=== A10 R3: R0 + connect-LL only, no impermeable face (does LL alone suffice?) ===
+[grid 6x6] w1=187.804 at kappa_c=1.259e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=179.151 at kappa_c=1.720e-01 kappa_r=1.197e-02 extras={}
+[re-eval] dt=1: w1=179.151 rmse=5.673 | dt=0.5: w1=180.420 rmse=5.689 (78 sims total)
+[eval dt=0.5] W1=180.42 RMSE=5.69 e_s=-2.3% om=-18.5% wake=45.9 stuckf=0.0003 ds|s|=2.643 (slow 2.643 / post 0.091) rare=+0 m Ns700=64.8 Ns1000=0.0 suw_m=77.38 m/s rel=100% t99=20 s adm=False | fit 78 sims, 6 s
+
+=== A10 R4: R2 without w_s (is w_s still needed?) ===
+[grid 6x6] w1=190.098 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=190.088 at kappa_c=4.919e-15 kappa_r=1.677e+02 extras={}
+[re-eval] dt=1: w1=190.088 rmse=6.496 | dt=0.5: w1=190.352 rmse=6.552 (78 sims total)
+[eval dt=0.5] W1=190.35 RMSE=6.55 e_s=-5.6% om=-18.3% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=n/a m/s rel=n/a t99=n/a s adm=True | fit 78 sims, 5 s
+
+=== A10 R5: R2 with tau_ll = 10 s (sensitivity) ===
+[grid 6x6] w1=190.097 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=190.088 at kappa_c=3.326e-13 kappa_r=7.465e+01 extras={}
+[re-eval] dt=1: w1=190.088 rmse=6.496 | dt=0.5: w1=190.352 rmse=6.552 (78 sims total)
+[eval dt=0.5] W1=190.35 RMSE=6.55 e_s=-5.6% om=-18.3% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=0.57 m/s rel=33% t99=n/a s adm=True | fit 78 sims, 5 s
+
+=== A10 R6: R2 with eta_la = 400 m (sensitivity) ===
+[grid 6x6] w1=190.098 at kappa_c=3.162e-03 kappa_r=3.162e-01 extras={}
+[polish nfev=40] w1=190.088 at kappa_c=3.326e-13 kappa_r=7.465e+01 extras={}
+[re-eval] dt=1: w1=190.088 rmse=6.496 | dt=0.5: w1=190.352 rmse=6.552 (78 sims total)
+[eval dt=0.5] W1=190.35 RMSE=6.55 e_s=-5.6% om=-18.3% wake=68.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) rare=+800 m Ns700=0.0 Ns1000=0.0 suw_m=0.57 m/s rel=33% t99=n/a s adm=True | fit 78 sims, 6 s
+
+[A10] admissible ['R1', 'R2', 'R4', 'R5', 'R6'], degenerate ['R2', 'R4', 'R5', 'R6'], candidates ['R1']; winner = R1 (W1=180.1); unconstrained min-W1 rung = R0 (W1=172.8, admissible=False)
+[A10 verdict] R2 vs RDR: W1 190.4 vs 167.4 (+13.7%: worse); wake 68.4 vs 47.7 veh/km (data 55.4: worse); rarefaction growth +800 vs -300 m (data +100: match); e_s -5.6% vs +0.2% (worse); omega err -18.3% vs -18.3% (match); downstream: stuck 0.0000 (RDR 0.0000), max s 0.00 (RDR 0.00) -> ADMISSIBLE; start-up wave 0.57 m/s, 33% of N_s released over [760,900] s (RDR 0.69 m/s, 4%); queue gone (1%) n/a s after t_fast (RDR n/a); N_s(1000) 0.0 vs 56.1 veh => 0 beat / 2 match / 3 worse of 5 -> does NOT match the kludge on W1, wake_vehkm, e_s
+[A10 verdict] R1 vs RDR: W1 180.1 vs 167.4 (+7.6%: worse); wake 60.7 vs 47.7 veh/km (data 55.4: beat); rarefaction growth +100 vs -300 m (data +100: beat); e_s -5.9% vs +0.2% (worse); omega err -18.3% vs -18.3% (match); downstream: stuck 0.0000 (RDR 0.0000), max s 0.06 (RDR 0.00) -> ADMISSIBLE; start-up wave -0.00 m/s, -0% of N_s released over [760,900] s (RDR 0.69 m/s, 4%); queue gone (1%) n/a s after t_fast (RDR n/a); N_s(1000) 44.4 vs 56.1 veh => 2 beat / 1 match / 2 worse of 5 -> does NOT match the kludge on W1, e_s
+[A10 (i)] R1 (interface alone): slow-window downstream s 0.000 veh/km (R0 3.59), ds_stuck(700) 0.0000 (R0 0.0016) -> the plume while the bottleneck is active is ELIMINATED (exactly, by construction); the plug (leaked s throttling the bottleneck) is gone with it: omega err -18.3% (R0 -18.3%), e_s -5.9% (R0 +4.3%), W1 180.1 (R0 172.8), wake 60.7 (R0 55.7). BUT after t_fast: max downstream s 0.06 veh/km, N_s(700) 31.9 -> N_s(1000) 44.4 veh, released 0% over [760,900] s, queue gone (1%) n/a s after t_fast: with no release mechanism (Delta v = 0 after t_fast) the platoon never dissolves and rides past the free-driving CAV, so R1 is admissible
+[A10 w_s?] w_s NOT needed on W1: R4 W1 190.4 <= R2 W1 190.4 (R4 admissible=True)
+[A10 sensitivity] R2 (cap + w_s=0.6w + s-impermeable + connect-LL(eta 200 m, tau 3 s)): W1 190.4, wake 68.4, rare +800 m, t99 n/a s, ds post 0.00, adm=True; R5 (cap + w_s=0.6w + s-impermeable + connect-LL(eta 200 m, tau 10 s)): W1 190.4, wake 68.4, rare +800 m, t99 n/a s, ds post 0.00, adm=True; R6 (cap + w_s=0.6w + s-impermeable + connect-LL(eta 400 m, tau 3 s)): W1 190.4, wake 68.4, rare +800 m, t99 n/a s, ds post 0.00, adm=True
+[A10] transfer q2000 R0  : W1=105.57 RMSE=3.20 e_s=+1.7% om=-20.3% wake=24.0 stuckf=0.0017 ds|s|=3.548 (slow 3.548 / post 2.480) Ns700=8.9 rel=-0% adm=False
+[A10] transfer q2000 R1  : W1=133.63 RMSE=4.47 e_s=-12.1% om=-21.3% wake=43.0 stuckf=0.0000 ds|s|=8.111 (slow 0.000 / post 8.111) Ns700=32.0 rel=-0% adm=False  <- winner
+[A10] transfer q2000 R2  : W1=122.02 RMSE=4.75 e_s=-7.4% om=-20.3% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=33% adm=True
+[A10] transfer q2000 R3  : W1=111.43 RMSE=3.13 e_s=-2.9% om=-20.3% wake=35.0 stuckf=0.0004 ds|s|=2.073 (slow 2.073 / post 0.096) Ns700=22.0 rel=100% adm=False
+[A10] transfer q2000 R4  : W1=122.02 RMSE=4.75 e_s=-7.4% om=-20.3% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=n/a adm=True
+[A10] transfer q2000 R5  : W1=122.02 RMSE=4.75 e_s=-7.4% om=-20.3% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=33% adm=True
+[A10] transfer q2000 R6  : W1=122.02 RMSE=4.75 e_s=-7.4% om=-20.3% wake=36.4 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=0.0 rel=33% adm=True
+[A10] transfer q2000 RDR : W1=113.23 RMSE=3.25 e_s=-2.2% om=-20.3% wake=32.3 stuckf=0.0000 ds|s|=0.000 (slow 0.000 / post 0.000) Ns700=17.6 rel=13% adm=True
+
+===== E10 ladder A10 (u15 q2500 lf, W1 fit) =====
+data refs: wake=55.4 veh/km, waviness=1.78 veh/km, wedge_frac=0.000, rarefaction_growth=+100 m
+rung    kappa_c   kappa_r     W1  RMSE     e_s  om_err  wake  stuckf  ds|s| dsslow dspost  wavi wedge rare_m slayer Ns700 Ns1000  suw_m  rel%  t99 adm
+R0    2.925e-01 4.157e-02  172.8  5.00   +4.3%  -18.3%  55.7  0.0016   3.59   3.59   2.53  1.15 0.000   +500   1467  32.3   35.9  -0.00     0  n/a  NO
+R1  * 3.161e-02 1.275e-05  180.1  6.49   -5.9%  -18.3%  60.7  0.0000   0.06   0.00   0.06  1.37 0.044   +100   1867  31.9   44.4  -0.00     0  n/a yes
+R2    3.326e-13 7.465e+01  190.4  6.55   -5.6%  -18.3%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0   0.57    33  n/a deg
+R3    1.720e-01 1.197e-02  180.4  5.69   -2.3%  -18.5%  45.9  0.0003   2.64   2.64   0.09  1.10 0.067     +0   2367  64.8    0.0  77.38   100   20  NO
+R4    4.919e-15 1.677e+02  190.4  6.55   -5.6%  -18.3%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0    nan   nan  n/a deg
+R5    3.326e-13 7.465e+01  190.4  6.55   -5.6%  -18.3%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0   0.57    33  n/a deg
+R6    3.326e-13 7.465e+01  190.4  6.55   -5.6%  -18.3%  68.4  0.0000   0.00   0.00   0.00  1.37 0.044   +800      0   0.0    0.0   0.57    33  n/a deg
+RDR   1.664e-01 1.399e-02  167.4  5.62   +0.2%  -18.3%  47.7  0.0000   0.00   0.00   0.00  1.53 0.000   -300   2167  54.4   56.1   0.69     4  n/a yes
+  ds|s| = max downstream s, all snapshots (E8 admissibility metric); dsslow / dspost = the same restricted to [t_slow,t_fast] / t > t_fast [veh/km];
+  suw_m = E9 mass-based start-up-wave speed -(dN_s/dt)/max_x s over [760,900] s [m/s]; rel% = share of N_s released there (ill-conditioned when the queue is gone before 760 s); t99 = time after t_fast for N_s to fall below 1% of N_s(t_fast) [s, 10 s cadence; n/a = never];
+  adm = ds_stuck<=0.01 AND ds|s|<=1 (deg = N_s(700) < 1 veh, excluded); * = winner; RDR = E8 final kappas, not refit
+
+===== E10 answers =====
+A1 (i): R1 (interface alone): slow-window downstream s 0.000 veh/km (R0 8.16), ds_stuck(700) 0.0000 (R0 0.0042) -> the plume while the bottleneck is active is ELIMINATED (exactly, by construction); the plug (leaked s throttling the bottleneck) is gone with it: omega err -2.5% (R0 -2.6%), e_s +3.9% (R0 +6.6%), W1 152.0 (R0 150.4), wake 55.1 (R0 54.7). BUT after t_fast: max downstream s 5.46 veh/km, N_s(700) 53.0 -> N_s(1000) 67.5 veh, released 0% over [760,900] s, queue gone (1%) n/a s after t_fast: with no release mechanism (Delta v = 0 after t_fast) the platoon never dissolves and rides past the free-driving CAV, so R1 is NOT admissible (fails ['ds_max_s'] on the post-t_fast window, not on the interface)
+A1 (ii): R2 vs RDR: W1 173.7 vs 152.2 (+14.2%: worse); wake 68.4 vs 53.8 veh/km (data 58.6: worse); rarefaction growth +800 vs +300 m (data +1200: beat); e_s +5.8% vs +4.7% (match); omega err -2.5% vs -2.5% (match); downstream: stuck 0.0000 (RDR 0.0000), max s 0.00 (RDR 0.00) -> ADMISSIBLE; start-up wave n/a m/s, n/a of N_s released over [760,900] s (RDR 1.02 m/s, 6%); queue gone (1%) n/a s after t_fast (RDR n/a); N_s(1000) 0.0 vs 64.2 veh => 1 beat / 2 match / 2 worse of 5 -> does NOT match the kludge on W1, wake_vehkm
+A1 (iii): winner R4 at q2000 (zero refit): W1 158.4 (RDR 146.7), e_s -11.6% (RDR +1.8%), omega err -23.5%, wake 51.1 (data 42.3), ds_stuck 0.0000, max ds s 0.28 veh/km -> ADMISSIBLE
+A10 (i): R1 (interface alone): slow-window downstream s 0.000 veh/km (R0 3.59), ds_stuck(700) 0.0000 (R0 0.0016) -> the plume while the bottleneck is active is ELIMINATED (exactly, by construction); the plug (leaked s throttling the bottleneck) is gone with it: omega err -18.3% (R0 -18.3%), e_s -5.9% (R0 +4.3%), W1 180.1 (R0 172.8), wake 60.7 (R0 55.7). BUT after t_fast: max downstream s 0.06 veh/km, N_s(700) 31.9 -> N_s(1000) 44.4 veh, released 0% over [760,900] s, queue gone (1%) n/a s after t_fast: with no release mechanism (Delta v = 0 after t_fast) the platoon never dissolves and rides past the free-driving CAV, so R1 is admissible
+A10 (ii): R2 vs RDR: W1 190.4 vs 167.4 (+13.7%: worse); wake 68.4 vs 47.7 veh/km (data 55.4: worse); rarefaction growth +800 vs -300 m (data +100: match); e_s -5.6% vs +0.2% (worse); omega err -18.3% vs -18.3% (match); downstream: stuck 0.0000 (RDR 0.0000), max s 0.00 (RDR 0.00) -> ADMISSIBLE; start-up wave 0.57 m/s, 33% of N_s released over [760,900] s (RDR 0.69 m/s, 4%); queue gone (1%) n/a s after t_fast (RDR n/a); N_s(1000) 0.0 vs 56.1 veh => 0 beat / 2 match / 3 worse of 5 -> does NOT match the kludge on W1, wake_vehkm, e_s
+A10 (iii): winner R1 at q2000 (zero refit): W1 133.6 (RDR 113.2), e_s -12.1% (RDR -2.2%), omega err -21.3%, wake 43.0 (data 25.9), ds_stuck 0.0000, max ds s 8.11 veh/km -> NOT admissible
+
+wrote /Users/yuanmingchen/Desktop/Research/SUMO/analysis/out/e10/ladder.json (74.7 s)

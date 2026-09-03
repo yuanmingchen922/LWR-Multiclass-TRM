@@ -1,0 +1,188 @@
+
+=== A1 RDR: cap + w_s=0.6w + downstream_release, E8 final kappas re-evaluated (NOT refit; reference only, never a pick) ===
+[eval dt=0.5] W1=152.18 RMSE=4.61 e_s=+4.7% om=-2.5% wake=53.8 stuckf=0.0000 ds|s|=0.000 slayer=2067 m Ns700=56.0 suw=0.10 m/s suw_m=1.02 m/s rel=6% net_ds=+0.0119 adm=True | E8 final_config W1 152.18, reproduced=True
+
+=== A1 RLL: cap + w_s=0.6w + eta_la=200 m, E8 final kappas re-evaluated (NOT refit; the like-for-like DR->LL swap; reference only, never a pick) ===
+[eval dt=0.5] W1=163.33 RMSE=5.39 e_s=+4.1% om=-2.5% wake=61.4 stuckf=0.0006 ds|s|=0.549 slayer=1967 m Ns700=32.9 suw=7.57 m/s suw_m=3.61 m/s rel=30% net_ds=-0.0179 llq=97% adm=True
+
+=== A1 R0: cap 2000 + w_s=0.6w (no DR, no LL: the leaky reference) ===
+[grid 6x6] w1=152.098 at kappa_c=5.012e-02 kappa_r=2.512e-03 extras={}
+[polish nfev=40] w1=151.876 at kappa_c=5.257e-02 kappa_r=2.857e-03 extras={}
+[re-eval] dt=1: w1=151.876 rmse=4.658 | dt=0.5: w1=150.376 rmse=4.774 (78 sims total)
+[eval dt=0.5] W1=150.38 RMSE=4.77 e_s=+6.6% om=-2.6% wake=54.7 stuckf=0.0042 ds|s|=8.164 slayer=1967 m Ns700=53.2 suw=-2.22 m/s suw_m=-0.00 m/s rel=-0% net_ds=+0.0080 adm=False
+
+=== A1 R1: cap + w_s + eta_la=200 m (the general fix) ===
+[grid 6x6] w1=151.795 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=151.279 at kappa_c=6.795e-01 kappa_r=5.291e-02 extras={}
+[re-eval] dt=1: w1=151.279 rmse=4.450 | dt=0.5: w1=155.253 rmse=4.905 (78 sims total)
+[eval dt=0.5] W1=155.25 RMSE=4.90 e_s=+12.9% om=-15.9% wake=42.1 stuckf=0.0049 ds|s|=9.289 slayer=3467 m Ns700=66.5 suw=0.35 m/s suw_m=2.49 m/s rel=11% net_ds=+0.0232 llq=44% adm=False
+
+=== A1 R2: cap + w_s + eta_la=100 m (horizon sensitivity) ===
+[grid 6x6] w1=152.804 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=152.025 at kappa_c=7.128e-01 kappa_r=5.434e-02 extras={}
+[re-eval] dt=1: w1=152.025 rmse=4.658 | dt=0.5: w1=155.090 rmse=4.958 (78 sims total)
+[eval dt=0.5] W1=155.09 RMSE=4.96 e_s=+12.6% om=-10.9% wake=41.0 stuckf=0.0043 ds|s|=8.686 slayer=3667 m Ns700=69.2 suw=0.28 m/s suw_m=2.62 m/s rel=11% net_ds=+0.0095 llq=46% adm=False
+
+=== A1 R3: cap + w_s + eta_la=400 m (horizon sensitivity) ===
+[grid 6x6] w1=151.496 at kappa_c=7.943e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=150.701 at kappa_c=7.020e-01 kappa_r=5.638e-02 extras={}
+[re-eval] dt=1: w1=150.701 rmse=4.314 | dt=0.5: w1=154.742 rmse=4.894 (78 sims total)
+[eval dt=0.5] W1=154.74 RMSE=4.89 e_s=+12.5% om=-21.3% wake=44.1 stuckf=0.0050 ds|s|=9.553 slayer=3367 m Ns700=64.8 suw=0.03 m/s suw_m=2.46 m/s rel=13% net_ds=+0.0328 llq=44% adm=False
+
+=== A1 R4: cap + eta_la=200 m, NO w_s (is w_s still needed?) ===
+[grid 6x6] w1=167.111 at kappa_c=1.995e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=165.919 at kappa_c=1.917e-01 kappa_r=1.240e-02 extras={}
+[re-eval] dt=1: w1=165.919 rmse=5.341 | dt=0.5: w1=164.964 rmse=5.251 (78 sims total)
+[eval dt=0.5] W1=164.96 RMSE=5.25 e_s=+9.5% om=-8.5% wake=43.7 stuckf=0.0041 ds|s|=8.184 slayer=2467 m Ns700=61.5 suw=0.28 m/s suw_m=4.48 m/s rel=28% net_ds=-0.0268 llq=74% adm=False
+
+=== A1 R0_c: cap 2000 + w_s=0.6w (no DR, no LL: the leaky reference) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=169.586 (W1=169.586, stuck=0.0001, ds|s|=0.443) at kappa_c=1.995e-01 kappa_r=6.310e-02
+[constrained polish nfev=40] J=161.250 (W1=161.250, stuck=0.0004, ds|s|=0.964) at kappa_c=1.822e-01 kappa_r=3.730e-02 (77 sims)
+[eval dt=0.5] W1=161.25 RMSE=5.87 e_s=+9.6% om=-2.5% wake=61.3 stuckf=0.0004 ds|s|=0.964 slayer=1517 m Ns700=22.7 suw=3.28 m/s suw_m=-0.00 m/s rel=-0% net_ds=-0.0581 adm=True | W1 cost vs unconstrained R0: +10.9
+
+=== A1 R1_c: cap + w_s + eta_la=200 m (the general fix) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=157.599 (W1=157.599, stuck=0.0013, ds|s|=0.827) at kappa_c=5.012e-02 kappa_r=1.000e-04
+[constrained polish nfev=40] J=154.569 (W1=154.569, stuck=0.0015, ds|s|=1.000) at kappa_c=5.079e-02 kappa_r=5.671e-05 (77 sims)
+[eval dt=0.5] W1=154.57 RMSE=4.84 e_s=+7.0% om=-2.5% wake=52.7 stuckf=0.0015 ds|s|=1.000 slayer=2067 m Ns700=52.2 suw=-0.29 m/s suw_m=3.61 m/s rel=20% net_ds=-0.0137 llq=96% adm=True | W1 cost vs unconstrained R1: -0.7
+
+=== A1 R2_c: cap + w_s + eta_la=100 m (horizon sensitivity) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=163.683 (W1=163.683, stuck=0.0007, ds|s|=0.562) at kappa_c=5.012e-02 kappa_r=1.000e-04
+[constrained polish nfev=40] J=153.349 (W1=153.349, stuck=0.0013, ds|s|=0.989) at kappa_c=5.555e-02 kappa_r=4.278e-05 (77 sims)
+[eval dt=0.5] W1=153.35 RMSE=4.97 e_s=+8.1% om=-2.5% wake=49.4 stuckf=0.0013 ds|s|=0.989 slayer=2167 m Ns700=54.4 suw=-0.22 m/s suw_m=3.97 m/s rel=22% net_ds=-0.0320 llq=97% adm=True | W1 cost vs unconstrained R2: -1.7
+
+=== A1 R3_c: cap + w_s + eta_la=400 m (horizon sensitivity) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=163.512 (W1=163.512, stuck=0.0006, ds|s|=0.522) at kappa_c=5.012e-02 kappa_r=2.512e-03
+[constrained polish nfev=40] J=155.263 (W1=155.263, stuck=0.0010, ds|s|=0.878) at kappa_c=5.102e-02 kappa_r=1.779e-03 (77 sims)
+[eval dt=0.5] W1=155.26 RMSE=4.76 e_s=+5.1% om=-2.5% wake=56.9 stuckf=0.0010 ds|s|=0.878 slayer=1967 m Ns700=46.1 suw=-0.29 m/s suw_m=2.93 m/s rel=18% net_ds=-0.0057 llq=95% adm=True | W1 cost vs unconstrained R3: +0.5
+
+=== A1 R4_c: cap + eta_la=200 m, NO w_s (is w_s still needed?) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=172.322 (W1=172.322, stuck=0.0000, ds|s|=0.854) at kappa_c=7.943e-01 kappa_r=3.162e-01
+[constrained polish nfev=40] J=171.982 (W1=171.982, stuck=0.0000, ds|s|=0.505) at kappa_c=6.796e-01 kappa_r=4.043e-01 (77 sims)
+[eval dt=0.5] W1=171.98 RMSE=7.11 e_s=+10.3% om=-2.5% wake=66.4 stuckf=0.0000 ds|s|=0.505 slayer=117 m Ns700=0.6 suw=n/a m/s suw_m=2.72 m/s rel=54% net_ds=-1.0958 llq=95% adm=True | W1 cost vs unconstrained R4: +7.0
+
+[A1] degenerate (no stuck population, excluded from the pick): ['R4_c']
+
+[A1] admissible: ['R0_c', 'R1_c', 'R2_c', 'R3_c']; pick = R2_c (W1=153.3; unconstrained optimum R0 W1=150.4)
+[A1 verdict pick] R2_c vs RDR: W1 153.3 vs 152.2 (+0.8%), wake 49.4 vs 53.8 veh/km (data 58.6), omega err -2.5% vs -2.5%, e_s +8.1% vs +4.7%; downstream: stuck 0.0013 (RDR 0.0000), max s 0.99 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed 3.97 m/s, 22% of the queue released over [760,900] s (RDR 1.02 m/s, 6%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at -0.22 m/s rel. to the CAV vs RDR 0.10; c_wave 3.73, w 6.21; post-release rarefaction growth +100 m vs RDR +300 m (data +1200 m); LL release budget (slow window): 97% inside the queue body, 3% downstream of the CAV cell; in-queue LL release = 42.0x the kappa_r release => the general LL term does NOT reproduce the kludge on wake density
+[A1 verdict R1] R1 vs RDR: W1 155.3 vs 152.2 (+2.0%), wake 42.1 vs 53.8 veh/km (data 58.6), omega err -15.9% vs -2.5%, e_s +12.9% vs +4.7%; downstream: stuck 0.0049 (RDR 0.0000), max s 9.29 veh/km (RDR 0.00) -> NOT admissible; start-up wave: mass-equivalent front speed 2.49 m/s, 11% of the queue released over [760,900] s (RDR 1.02 m/s, 6%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 0.35 m/s rel. to the CAV vs RDR 0.10; c_wave 3.73, w 6.21; post-release rarefaction growth -1200 m vs RDR +300 m (data +1200 m); LL release budget (slow window): 44% inside the queue body, 56% downstream of the CAV cell; in-queue LL release = 0.0x the kappa_r release => the general LL term does NOT reproduce the kludge on downstream cleanliness, wake density
+[A1 verdict R1_c] R1_c vs RDR: W1 154.6 vs 152.2 (+1.6%), wake 52.7 vs 53.8 veh/km (data 58.6), omega err -2.5% vs -2.5%, e_s +7.0% vs +4.7%; downstream: stuck 0.0015 (RDR 0.0000), max s 1.00 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed 3.61 m/s, 20% of the queue released over [760,900] s (RDR 1.02 m/s, 6%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at -0.29 m/s rel. to the CAV vs RDR 0.10; c_wave 3.73, w 6.21; post-release rarefaction growth -400 m vs RDR +300 m (data +1200 m); LL release budget (slow window): 96% inside the queue body, 4% downstream of the CAV cell; in-queue LL release = 28.3x the kappa_r release => the general LL term REPRODUCES the kludge (clean downstream, W1 within 5%, wake within 3 veh/km)
+[A1 verdict RLL] RLL vs RDR: W1 163.3 vs 152.2 (+7.3%), wake 61.4 vs 53.8 veh/km (data 58.6), omega err -2.5% vs -2.5%, e_s +4.1% vs +4.7%; downstream: stuck 0.0006 (RDR 0.0000), max s 0.55 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed 3.61 m/s, 30% of the queue released over [760,900] s (RDR 1.02 m/s, 6%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 7.57 m/s rel. to the CAV vs RDR 0.10; c_wave 3.73, w 6.21; post-release rarefaction growth +900 m vs RDR +300 m (data +1200 m); LL release budget (slow window): 97% inside the queue body, 3% downstream of the CAV cell; in-queue LL release = 1.5x the kappa_r release => the general LL term does NOT reproduce the kludge on W1, wake density
+[A1 w_s?] w_s still needed: R1_c W1 154.6 < R4_c W1 172.0
+[A1] transfer q2000 R2_c : W1=169.94 RMSE=4.19 e_s=-10.2% om=-28.7% wake=49.0 stuckf=0.0129 ds|s|=11.134 Ns700=53.3 rel=20% adm=False  <- pick
+[A1] transfer q2000 R0_c : W1=140.04 RMSE=3.79 e_s=+7.1% om=-6.2% wake=32.0 stuckf=0.0004 ds|s|=0.993 Ns700=7.6 rel=-0% adm=True
+[A1] transfer q2000 R1_c : W1=168.14 RMSE=3.97 e_s=-10.4% om=-28.8% wake=49.3 stuckf=0.0168 ds|s|=13.207 Ns700=52.0 rel=18% adm=False
+[A1] transfer q2000 R3_c : W1=143.55 RMSE=2.68 e_s=+2.1% om=-10.9% wake=38.7 stuckf=0.0135 ds|s|=12.964 Ns700=31.6 rel=18% adm=False
+[A1] transfer q2000 RLL  : W1=143.90 RMSE=2.71 e_s=+2.0% om=-11.3% wake=39.6 stuckf=0.0111 ds|s|=11.000 Ns700=32.5 rel=20% adm=False
+[A1] transfer q2000 RDR  : W1=146.70 RMSE=2.63 e_s=+1.8% om=-6.2% wake=40.8 stuckf=0.0000 ds|s|=0.000 Ns700=30.3 rel=13% adm=True
+
+===== E9 ladder A1 (u15 q2500 lf, W1 fit) =====
+data refs: wake=58.6 veh/km, waviness=2.21 veh/km, wedge_frac=0.044, rarefaction_growth=+1200 m;  c_wave: w_s=3.73 m/s (w_s rungs), w=6.21 m/s (R4)
+rung    kappa_c   kappa_r     W1  RMSE     e_s  om_err  wake  stuckf  ds|s|  wavi w/dat wedge rare_m slayer Ns700    suw  suw_m  rel%  net_ds  llq% adm
+R0    5.257e-02 2.857e-03  150.4  4.77   +6.6%   -2.6%  54.7  0.0042   8.16  1.34  0.61 0.022   +100   1967  53.2  -2.22  -0.00    -0 +0.0080   nan  NO
+R1    6.795e-01 5.291e-02  155.3  4.90  +12.9%  -15.9%  42.1  0.0049   9.29  1.16  0.52 0.000  -1200   3467  66.5   0.35   2.49    11 +0.0232    44  NO
+R2    7.128e-01 5.434e-02  155.1  4.96  +12.6%  -10.9%  41.0  0.0043   8.69  1.16  0.52 0.000  -1400   3667  69.2   0.28   2.62    11 +0.0095    46  NO
+R3    7.020e-01 5.638e-02  154.7  4.89  +12.5%  -21.3%  44.1  0.0050   9.55  1.15  0.52 0.000  -1100   3367  64.8   0.03   2.46    13 +0.0328    44  NO
+R4    1.917e-01 1.240e-02  165.0  5.25   +9.5%   -8.5%  43.7  0.0041   8.18  1.32  0.60 0.000     +0   2467  61.5   0.28   4.48    28 -0.0268    74  NO
+R0_c  1.822e-01 3.730e-02  161.2  5.87   +9.6%   -2.5%  61.3  0.0004   0.96  1.24  0.56 0.022  +1100   1517  22.7   3.28  -0.00    -0 -0.0581   nan yes
+R1_c  5.079e-02 5.671e-05  154.6  4.84   +7.0%   -2.5%  52.7  0.0015   1.00  1.53  0.69 0.000   -400   2067  52.2  -0.29   3.61    20 -0.0137    96 yes
+R2_c  5.555e-02 4.278e-05  153.3  4.97   +8.1%   -2.5%  49.4  0.0013   0.99  1.51  0.68 0.000   +100   2167  54.4  -0.22   3.97    22 -0.0320    97 yes
+R3_c  5.102e-02 1.779e-03  155.3  4.76   +5.1%   -2.5%  56.9  0.0010   0.88  1.46  0.66 0.044   -200   1967  46.1  -0.29   2.93    18 -0.0057    95 yes
+R4_c  6.796e-01 4.043e-01  172.0  7.11  +10.3%   -2.5%  66.4  0.0000   0.50  1.25  0.56 0.022   +700    117   0.6    nan   2.72    54 -1.0958    95 deg
+RLL   5.323e-02 1.654e-03  163.3  5.39   +4.1%   -2.5%  61.4  0.0006   0.55  1.41  0.64 0.044   +900   1967  32.9   7.57   3.61    30 -0.0179    97 yes
+RDR   5.323e-02 1.654e-03  152.2  4.61   +4.7%   -2.5%  53.8  0.0000   0.00  1.37  0.62 0.044   +300   2067  56.0   0.10   1.02     6 +0.0119   nan yes
+  suw = start-up wave: {s>1 veh/km} head recedes rel. to the CAV over t in [760,900] s [m/s]; suw_m = mass-equivalent front speed -(dN_s/dt)/max_x s [m/s] (0 when nothing releases after t_fast);
+  rel% = share of N_s released over [760,900] s; net_ds = lambda_ds - LL rate [1/s] (closed form; <0: leaked s decays); llq% = share of the LL release acting inside the queue body (j <= CAV cell) in [250,750] s;
+  adm = ds_stuck<=0.01 AND max downstream s<=1 veh/km (deg = degenerate, N_s(700) < 1 veh, excluded); '_c' rows = constrained refit (W1 + admissibility penalty, dt=0.5); RLL/RDR = E8 final kappas, not refit
+
+=== A10 RDR: cap + w_s=0.6w + downstream_release, E8 final kappas re-evaluated (NOT refit; reference only, never a pick) ===
+[eval dt=0.5] W1=167.38 RMSE=5.62 e_s=+0.2% om=-18.3% wake=47.7 stuckf=0.0000 ds|s|=0.000 slayer=2167 m Ns700=54.4 suw=0.35 m/s suw_m=0.69 m/s rel=4% net_ds=+0.0097 adm=True | E8 final_config W1 167.38, reproduced=True
+
+=== A10 RLL: cap + w_s=0.6w + eta_la=200 m, E8 final kappas re-evaluated (NOT refit; the like-for-like DR->LL swap; reference only, never a pick) ===
+[eval dt=0.5] W1=171.27 RMSE=5.68 e_s=-2.7% om=-24.4% wake=50.8 stuckf=0.0045 ds|s|=6.532 slayer=2067 m Ns700=58.3 suw=0.42 m/s suw_m=2.72 m/s rel=15% net_ds=-0.0201 llq=56% adm=False
+
+=== A10 R0: cap 2000 + w_s=0.6w (no DR, no LL: the leaky reference) ===
+[grid 6x6] w1=182.105 at kappa_c=3.162e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=172.288 at kappa_c=2.925e-01 kappa_r=4.157e-02 extras={}
+[re-eval] dt=1: w1=172.288 rmse=5.551 | dt=0.5: w1=172.789 rmse=5.000 (78 sims total)
+[eval dt=0.5] W1=172.79 RMSE=5.00 e_s=+4.3% om=-18.3% wake=55.7 stuckf=0.0016 ds|s|=3.595 slayer=1467 m Ns700=32.3 suw=-0.86 m/s suw_m=-0.00 m/s rel=-0% net_ds=-0.0360 adm=False
+
+=== A10 R1: cap + w_s + eta_la=200 m (the general fix) ===
+[grid 6x6] w1=179.890 at kappa_c=5.012e-02 kappa_r=1.000e-04 extras={}
+[polish nfev=40] w1=179.709 at kappa_c=4.896e-02 kappa_r=1.524e-05 extras={}
+[re-eval] dt=1: w1=179.709 rmse=6.583 | dt=0.5: w1=181.456 rmse=6.620 (78 sims total)
+[eval dt=0.5] W1=181.46 RMSE=6.62 e_s=-6.3% om=-18.3% wake=57.9 stuckf=0.0012 ds|s|=0.741 slayer=2067 m Ns700=42.7 suw=4.46 m/s suw_m=3.72 m/s rel=25% net_ds=-0.0141 llq=97% adm=True
+
+=== A10 R2: cap + w_s + eta_la=100 m (horizon sensitivity) ===
+[grid 6x6] w1=181.533 at kappa_c=3.162e-01 kappa_r=6.310e-02 extras={}
+[polish nfev=40] w1=172.057 at kappa_c=3.067e-01 kappa_r=3.816e-02 extras={}
+[re-eval] dt=1: w1=172.057 rmse=5.550 | dt=0.5: w1=172.115 rmse=4.986 (78 sims total)
+[eval dt=0.5] W1=172.12 RMSE=4.99 e_s=+3.9% om=-18.3% wake=54.5 stuckf=0.0013 ds|s|=3.323 slayer=1567 m Ns700=37.2 suw=0.74 m/s suw_m=3.12 m/s rel=24% net_ds=-0.0704 llq=70% adm=False
+
+=== A10 R3: cap + w_s + eta_la=400 m (horizon sensitivity) ===
+[grid 6x6] w1=180.933 at kappa_c=5.012e-02 kappa_r=2.512e-03 extras={}
+[polish nfev=40] w1=179.548 at kappa_c=4.548e-02 kappa_r=9.457e-04 extras={}
+[re-eval] dt=1: w1=179.548 rmse=6.456 | dt=0.5: w1=181.837 rmse=6.516 (78 sims total)
+[eval dt=0.5] W1=181.84 RMSE=6.52 e_s=-7.1% om=-18.3% wake=60.3 stuckf=0.0009 ds|s|=0.582 slayer=1967 m Ns700=36.1 suw=5.49 m/s suw_m=3.54 m/s rel=26% net_ds=-0.0049 llq=96% adm=True
+
+=== A10 R4: cap + eta_la=200 m, NO w_s (is w_s still needed?) ===
+[grid 6x6] w1=189.585 at kappa_c=1.259e-01 kappa_r=1.259e-02 extras={}
+[polish nfev=40] w1=186.381 at kappa_c=1.429e-01 kappa_r=1.107e-02 extras={}
+[re-eval] dt=1: w1=186.381 rmse=6.339 | dt=0.5: w1=184.993 rmse=6.210 (78 sims total)
+[eval dt=0.5] W1=184.99 RMSE=6.21 e_s=-1.7% om=-19.1% wake=50.3 stuckf=0.0035 ds|s|=7.166 slayer=1967 m Ns700=50.8 suw=-0.11 m/s suw_m=3.57 m/s rel=26% net_ds=-0.0384 llq=65% adm=False
+
+=== A10 R0_c: cap 2000 + w_s=0.6w (no DR, no LL: the leaky reference) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=185.985 (W1=185.985, stuck=0.0001, ds|s|=0.221) at kappa_c=1.259e-01 kappa_r=6.310e-02
+[constrained polish nfev=40] J=179.907 (W1=179.907, stuck=0.0004, ds|s|=0.557) at kappa_c=6.625e-02 kappa_r=1.070e-02 (77 sims)
+[eval dt=0.5] W1=179.91 RMSE=5.89 e_s=-1.5% om=-18.3% wake=62.4 stuckf=0.0004 ds|s|=0.557 slayer=1517 m Ns700=17.3 suw=6.17 m/s suw_m=-0.00 m/s rel=-0% net_ds=-0.0122 adm=True | W1 cost vs unconstrained R0: +7.1
+
+=== A10 R2_c: cap + w_s + eta_la=100 m (horizon sensitivity) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=177.636 (W1=177.636, stuck=0.0002, ds|s|=0.933) at kappa_c=3.162e-01 kappa_r=6.310e-02
+[constrained polish nfev=40] J=177.082 (W1=177.063, stuck=0.0003, ds|s|=1.000) at kappa_c=2.984e-01 kappa_r=5.735e-02 (77 sims)
+[eval dt=0.5] W1=177.06 RMSE=5.55 e_s=-1.4% om=-18.3% wake=60.2 stuckf=0.0003 ds|s|=1.000 slayer=1517 m Ns700=25.9 suw=7.03 m/s suw_m=3.50 m/s rel=29% net_ds=-0.1331 llq=82% adm=False | W1 cost vs unconstrained R2: +4.9
+
+=== A10 R4_c: cap + eta_la=200 m, NO w_s (is w_s still needed?) [constrained refit: W1 + admissibility penalty, dt=0.5] ===
+[constrained grid 6x6 dt=0.5] J=190.358 (W1=190.358, stuck=0.0000, ds|s|=0.002) at kappa_c=3.162e-03 kappa_r=3.162e-01
+[constrained polish nfev=40] J=190.352 (W1=190.352, stuck=0.0000, ds|s|=0.000) at kappa_c=4.919e-15 kappa_r=1.677e+02 (77 sims)
+[eval dt=0.5] W1=190.35 RMSE=6.55 e_s=-5.6% om=-18.3% wake=68.4 stuckf=0.0000 ds|s|=0.000 slayer=0 m Ns700=0.0 suw=n/a m/s suw_m=n/a m/s rel=n/a net_ds=-524.6957 adm=True | W1 cost vs unconstrained R4: +5.4
+
+[A10] degenerate (no stuck population, excluded from the pick): ['R4_c']
+
+[A10] admissible: ['R1', 'R3', 'R0_c']; pick = R0_c (W1=179.9; unconstrained optimum R2 W1=172.1)
+[A10 verdict pick] R0_c vs RDR: W1 179.9 vs 167.4 (+7.5%), wake 62.4 vs 47.7 veh/km (data 55.4), omega err -18.3% vs -18.3%, e_s -1.5% vs +0.2%; downstream: stuck 0.0004 (RDR 0.0000), max s 0.56 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed -0.00 m/s, -0% of the queue released over [760,900] s (RDR 0.69 m/s, 4%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 6.17 m/s rel. to the CAV vs RDR 0.35; c_wave 3.73, w 6.21; post-release rarefaction growth +1700 m vs RDR -300 m (data +100 m) => the general LL term does NOT reproduce the kludge on W1, wake density
+[A10 verdict R1] R1 vs RDR: W1 181.5 vs 167.4 (+8.4%), wake 57.9 vs 47.7 veh/km (data 55.4), omega err -18.3% vs -18.3%, e_s -6.3% vs +0.2%; downstream: stuck 0.0012 (RDR 0.0000), max s 0.74 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed 3.72 m/s, 25% of the queue released over [760,900] s (RDR 0.69 m/s, 4%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 4.46 m/s rel. to the CAV vs RDR 0.35; c_wave 3.73, w 6.21; post-release rarefaction growth +0 m vs RDR -300 m (data +100 m); LL release budget (slow window): 97% inside the queue body, 3% downstream of the CAV cell; in-queue LL release = 137.3x the kappa_r release => the general LL term does NOT reproduce the kludge on W1, wake density
+[A10 verdict RLL] RLL vs RDR: W1 171.3 vs 167.4 (+2.3%), wake 50.8 vs 47.7 veh/km (data 55.4), omega err -24.4% vs -18.3%, e_s -2.7% vs +0.2%; downstream: stuck 0.0045 (RDR 0.0000), max s 6.53 veh/km (RDR 0.00) -> NOT admissible; start-up wave: mass-equivalent front speed 2.72 m/s, 15% of the queue released over [760,900] s (RDR 0.69 m/s, 4%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 0.42 m/s rel. to the CAV vs RDR 0.35; c_wave 3.73, w 6.21; post-release rarefaction growth +0 m vs RDR -300 m (data +100 m); LL release budget (slow window): 56% inside the queue body, 44% downstream of the CAV cell; in-queue LL release = 0.0x the kappa_r release => the general LL term does NOT reproduce the kludge on downstream cleanliness, wake density
+[A10 w_s?] w_s still needed: R1 W1 181.5 < R4_c W1 190.4
+[A10] transfer q2000 R0_c : W1=115.75 RMSE=4.07 e_s=-4.1% om=-20.3% wake=31.8 stuckf=0.0005 ds|s|=0.660 Ns700=5.4 rel=-0% adm=True  <- pick
+[A10] transfer q2000 R1   : W1=143.51 RMSE=4.86 e_s=-18.8% om=-38.2% wake=48.5 stuckf=0.0163 ds|s|=13.068 Ns700=50.2 rel=18% adm=False
+[A10] transfer q2000 R3   : W1=126.04 RMSE=3.94 e_s=-10.6% om=-26.5% wake=40.5 stuckf=0.0149 ds|s|=13.499 Ns700=35.0 rel=17% adm=False
+[A10] transfer q2000 RLL  : W1=109.80 RMSE=3.11 e_s=-2.4% om=-23.4% wake=29.5 stuckf=0.0048 ds|s|=6.562 Ns700=17.8 rel=27% adm=False
+[A10] transfer q2000 RDR  : W1=113.23 RMSE=3.25 e_s=-2.2% om=-20.3% wake=32.3 stuckf=0.0000 ds|s|=0.000 Ns700=17.6 rel=13% adm=True
+
+===== E9 ladder A10 (u15 q2500 lf, W1 fit) =====
+data refs: wake=55.4 veh/km, waviness=1.78 veh/km, wedge_frac=0.000, rarefaction_growth=+100 m;  c_wave: w_s=3.73 m/s (w_s rungs), w=6.21 m/s (R4)
+rung    kappa_c   kappa_r     W1  RMSE     e_s  om_err  wake  stuckf  ds|s|  wavi w/dat wedge rare_m slayer Ns700    suw  suw_m  rel%  net_ds  llq% adm
+R0    2.925e-01 4.157e-02  172.8  5.00   +4.3%  -18.3%  55.7  0.0016   3.59  1.15  0.65 0.000   +500   1467  32.3  -0.86  -0.00    -0 -0.0360   nan  NO
+R1    4.896e-02 1.524e-05  181.5  6.62   -6.3%  -18.3%  57.9  0.0012   0.74  1.44  0.80 0.044     +0   2067  42.7   4.46   3.72    25 -0.0141    97 yes
+R2    3.067e-01 3.816e-02  172.1  4.99   +3.9%  -18.3%  54.5  0.0013   3.32  1.14  0.64 0.000   +400   1567  37.2   0.74   3.12    24 -0.0704    70  NO
+R3    4.548e-02 9.457e-04  181.8  6.52   -7.1%  -18.3%  60.3  0.0009   0.58  1.40  0.79 0.044   +500   1967  36.1   5.49   3.54    26 -0.0049    96 yes
+R4    1.429e-01 1.107e-02  185.0  6.21   -1.7%  -19.1%  50.3  0.0035   7.17  1.37  0.77 0.000   +200   1967  50.8  -0.11   3.57    26 -0.0384    65  NO
+R0_c  6.625e-02 1.070e-02  179.9  5.89   -1.5%  -18.3%  62.4  0.0004   0.56  1.25  0.70 0.000  +1700   1517  17.3   6.17  -0.00    -0 -0.0122   nan yes
+R2_c  2.984e-01 5.735e-02  177.1  5.55   -1.4%  -18.3%  60.2  0.0003   1.00  1.14  0.64 0.000  +1300   1517  25.9   7.03   3.50    29 -0.1331    82  NO
+R4_c  4.919e-15 1.677e+02  190.4  6.55   -5.6%  -18.3%  68.4  0.0000   0.00  1.37  0.77 0.044   +800      0   0.0    nan    nan   nan -524.6957   nan deg
+RLL   1.664e-01 1.399e-02  171.3  5.68   -2.7%  -24.4%  50.8  0.0045   6.53  1.17  0.66 0.022     +0   2067  58.3   0.42   2.72    15 -0.0201    56  NO
+RDR   1.664e-01 1.399e-02  167.4  5.62   +0.2%  -18.3%  47.7  0.0000   0.00  1.53  0.86 0.000   -300   2167  54.4   0.35   0.69     4 +0.0097   nan yes
+  suw = start-up wave: {s>1 veh/km} head recedes rel. to the CAV over t in [760,900] s [m/s]; suw_m = mass-equivalent front speed -(dN_s/dt)/max_x s [m/s] (0 when nothing releases after t_fast);
+  rel% = share of N_s released over [760,900] s; net_ds = lambda_ds - LL rate [1/s] (closed form; <0: leaked s decays); llq% = share of the LL release acting inside the queue body (j <= CAV cell) in [250,750] s;
+  adm = ds_stuck<=0.01 AND max downstream s<=1 veh/km (deg = degenerate, N_s(700) < 1 veh, excluded); '_c' rows = constrained refit (W1 + admissibility penalty, dt=0.5); RLL/RDR = E8 final kappas, not refit
+
+===== does the general leader-loss term reproduce the kludge? =====
+A1: pick=R2_c -> R2_c vs RDR: W1 153.3 vs 152.2 (+0.8%), wake 49.4 vs 53.8 veh/km (data 58.6), omega err -2.5% vs -2.5%, e_s +8.1% vs +4.7%; downstream: stuck 0.0013 (RDR 0.0000), max s 0.99 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed 3.97 m/s, 22% of the queue released over [760,900] s (RDR 1.02 m/s, 6%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at -0.22 m/s rel. to the CAV vs RDR 0.10; c_wave 3.73, w 6.21; post-release rarefaction growth +100 m vs RDR +300 m (data +1200 m); LL release budget (slow window): 97% inside the queue body, 3% downstream of the CAV cell; in-queue LL release = 42.0x the kappa_r release => the general LL term does NOT reproduce the kludge on wake density
+A1: like-for-like swap -> RLL vs RDR: W1 163.3 vs 152.2 (+7.3%), wake 61.4 vs 53.8 veh/km (data 58.6), omega err -2.5% vs -2.5%, e_s +4.1% vs +4.7%; downstream: stuck 0.0006 (RDR 0.0000), max s 0.55 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed 3.61 m/s, 30% of the queue released over [760,900] s (RDR 1.02 m/s, 6%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 7.57 m/s rel. to the CAV vs RDR 0.10; c_wave 3.73, w 6.21; post-release rarefaction growth +900 m vs RDR +300 m (data +1200 m); LL release budget (slow window): 97% inside the queue body, 3% downstream of the CAV cell; in-queue LL release = 1.5x the kappa_r release => the general LL term does NOT reproduce the kludge on W1, wake density
+A1: horizon sensitivity (W1 / max ds s / adm): R2 eta=100: 155.1 / 8.69 / no, R1 eta=200: 155.3 / 9.29 / no, R3 eta=400: 154.7 / 9.55 / no, R2_c eta=100: 153.3 / 0.99 / yes, R1_c eta=200: 154.6 / 1.00 / yes, R3_c eta=400: 155.3 / 0.88 / yes; w_s: w_s still needed: R1_c W1 154.6 < R4_c W1 172.0
+A1: q2000 transfer of R2_c: W1 169.9 (RDR 146.7), e_s -10.2%, max ds s 11.13 veh/km, admissible=False
+A10: pick=R0_c -> R0_c vs RDR: W1 179.9 vs 167.4 (+7.5%), wake 62.4 vs 47.7 veh/km (data 55.4), omega err -18.3% vs -18.3%, e_s -1.5% vs +0.2%; downstream: stuck 0.0004 (RDR 0.0000), max s 0.56 veh/km (RDR 0.00) -> ADMISSIBLE; start-up wave: mass-equivalent front speed -0.00 m/s, -0% of the queue released over [760,900] s (RDR 0.69 m/s, 4%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 6.17 m/s rel. to the CAV vs RDR 0.35; c_wave 3.73, w 6.21; post-release rarefaction growth +1700 m vs RDR -300 m (data +100 m) => the general LL term does NOT reproduce the kludge on W1, wake density
+A10: like-for-like swap -> RLL vs RDR: W1 171.3 vs 167.4 (+2.3%), wake 50.8 vs 47.7 veh/km (data 55.4), omega err -24.4% vs -18.3%, e_s -2.7% vs +0.2%; downstream: stuck 0.0045 (RDR 0.0000), max s 6.53 veh/km (RDR 0.00) -> NOT admissible; start-up wave: mass-equivalent front speed 2.72 m/s, 15% of the queue released over [760,900] s (RDR 0.69 m/s, 4%: the DR projection eating s that overtakes the CAV after t_fast, not a release wave); {s>1} head recedes at 0.42 m/s rel. to the CAV vs RDR 0.35; c_wave 3.73, w 6.21; post-release rarefaction growth +0 m vs RDR -300 m (data +100 m); LL release budget (slow window): 56% inside the queue body, 44% downstream of the CAV cell; in-queue LL release = 0.0x the kappa_r release => the general LL term does NOT reproduce the kludge on downstream cleanliness, wake density
+A10: horizon sensitivity (W1 / max ds s / adm): R2 eta=100: 172.1 / 3.32 / no, R1 eta=200: 181.5 / 0.74 / yes, R3 eta=400: 181.8 / 0.58 / yes, R2_c eta=100: 177.1 / 1.00 / no; w_s: w_s still needed: R1 W1 181.5 < R4_c W1 190.4
+A10: q2000 transfer of R0_c: W1 115.8 (RDR 113.2), e_s -4.1%, max ds s 0.66 veh/km, admissible=True
+
+wrote /Users/yuanmingchen/Desktop/Research/SUMO/analysis/out/e9/ladder.json (100.8 s)

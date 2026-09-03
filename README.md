@@ -169,6 +169,25 @@ See `E8_results.md`.
 
 ![Final hybrid vs data vs classical](out/e8/fig_profiles_final_A1_u15_q2500.png)
 
+**Step 11 — Replacing the kludge by general model structure (E9/E10).**
+The fourth review rejected the downstream-release rule as a kludge (it converts
+labels based on the CAV's position — scenario information, not traffic state).
+Two general replacements were tried, one at a time. A state-only *leader-loss*
+release (a stuck vehicle with no slow vehicle ahead within a look-ahead distance
+is released; front receding at the start-up wave speed w) failed: it released
+inside the queue, and the downstream stuck vehicles it was meant to remove turned
+out to be numerical front diffusion across the CAV cell. What works is an
+**interface constraint of the same kind as the Delle Monache–Goatin cap**: *only
+free vehicles overtake the bottleneck* — the synchronized class has zero flux
+relative to the moving bottleneck. It has no parameters, references no label
+conversion, and reproduces the kludge's results on the calibration scenario
+(W1 152.0 vs 152.2; wake 55.1 vs 53.8 veh/km; e_s +3.9% vs +4.7%; ω −2.5% both;
+downstream exactly clean while the bottleneck is active). Honest gaps: at A=10 and
+in the q=2000 transfers the general model is 8–18% worse in W1 than the kludge.
+See `E10_results.md`.
+
+![General model vs kludge vs data](out/e10/fig_profiles_final_e10_A1_u15_q2500.png)
+
 ---
 
 ## How to run
@@ -193,6 +212,9 @@ python3 e7_ablation.py           # E7: W1/gamma/w_s ablation -> out/e7/
 python3 e7_transfer.py           # E7: speed-transfer sweep -> out/e7/
 python3 e8_ladder.py --run       # E8: one-at-a-time ladder -> out/e8/
 python3 e8_final.py              # E8: final hybrid figures + config
+python3 e9_ladder.py --run       # E9: ratio-form leader-loss ladder (negative result)
+python3 e10_ladder.py --run      # E10: interface-constraint / leader-loss attribution ladder
+python3 e10_final.py             # E10: final general model vs the kludge
 ```
 
 ## File guide
@@ -223,6 +245,9 @@ python3 e8_final.py              # E8: final hybrid figures + config
 | `e7_transfer.py` | **E7**: speed-transfer study — kappas fitted at u=15 predicting u=10…24, vs the classical baseline. |
 | `e8_ladder.py` | **E8**: one-at-a-time ablation ladder (metric / w_s / downstream-release), waviness and wake diagnostics, analytic growth checks. |
 | `e8_final.py` | **E8**: final hybrid configuration (cap + w_s + downstream release) — figures and summary. |
+| `e9_ladder.py` | **E9**: ratio-form leader-loss ladder (the negative result: in-queue release, numerical plume). |
+| `e10_ladder.py` | **E10**: one-at-a-time attribution — s-impermeable interface vs connectivity leader-loss vs w_s. |
+| `e10_final.py` | **E10**: the final general model (cap + w_s + s-impermeable interface) vs the E8 kludge, with figures. |
 
 ### Tests and independent audits
 
@@ -234,6 +259,7 @@ python3 e8_final.py              # E8: final hybrid figures + config
 | `audit_dispersion.py` | Independent sympy re-derivation of all Jacobians and the dispersion relation; compares against the module to machine precision (exit 0 = pass). |
 | `audit_e7.py` | Independent audit of the gamma/w_s/P_s solver knobs (bit-identity, invariants, cap-path regression). |
 | `audit_e8.py` | Independent audit of the downstream-release constraint (bit-identity vs git, boundary semantics, invariants). |
+| `audit_e9.py`, `audit_e10.py` | Independent audits of the leader-loss terms and the impermeable interface (bit-identity vs git HEAD, invariants, exactness, generality checks). |
 
 ### Reports (read these for the full story)
 
@@ -246,6 +272,7 @@ python3 e8_final.py              # E8: final hybrid figures + config
 | `E6_results.md` | The native moving-bottleneck result: field-calibrated catch & release vs classical LWR+MB, the two-stream interpretation, and the honest trade-offs. |
 | `E7_results.md` | Wasserstein calibration, the stuck-class flux function fix (supercritical wake + restored rarefaction), the A=10 dynamic-equilibrium verdict, and the speed-transfer study. |
 | `E8_results.md` | The downstream-release constraint, the plug discovery (why the capacity term is structurally necessary), the closed-form no-waviness condition, and the final hybrid configuration. |
+| `E10_results.md` | Why the kludge had to go, the failed general attempt (E9), the one-at-a-time ladder, the interface constraint that replaces it, and the final general model with honest gaps. |
 
 ### Outputs (`out/`)
 
@@ -260,6 +287,7 @@ python3 e8_final.py              # E8: final hybrid figures + config
 | `e6/` | Native-MB fit results, three-model metrics, heatmap and profile comparison figures. |
 | `e7/` | Ablation table, transfer curve + JSON, winner profile/heatmap figures (incl. the t=850 post-release panel). |
 | `e8/` | Ladder JSON, hybrid/candidate evaluations, final-configuration figures. |
+| `e9/`, `e10/` | Leader-loss ladder (E9), attribution ladder + final general-model configuration and figures (E10). |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas
