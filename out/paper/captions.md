@@ -56,13 +56,14 @@ the classical LWR+MB model.
 catch & release quantities** (`fig_assertiveness`). All panels: $u_\xi = 54$
 km/h, analysis window 260–740 s inside the slow phase, five SUMO runs per
 point, $A$ (SUMO `lcAssertive`) on a logarithmic axis; $q_\mathrm{in} =
-2500$ veh/h (black, filled circles) and 2000 veh/h (grey, open squares).
+2500$ veh/h as filled circles and 2000 veh/h as open squares in every panel
+(black and grey in (a), the coefficient colours in (b), red in (c)).
 (a) Overtaking flow $\omega_\xi$ past the controlled vehicle (mean over runs,
 shading min–max), the analogue of Fig. 1 in [ECC22]; dashed: free-flow
 reference $\omega_0 = q_\mathrm{in}(1 - u_\xi/v_f) = 926$ and 1158 veh/h.
 $\omega_\xi$ rises steeply from $A = 1$ to 2, peaks at 886 veh/h
 ($A = 2.25$, $q_\mathrm{in} = 2000$) and 888 veh/h ($A = 2.5$, 2500), and
-decays slowly to 865 and 845 veh/h at $A = 10$; for $A \ge 2$ the two inflows
+decays slowly to 866 and 845 veh/h at $A = 10$; for $A \ge 2$ the two inflows
 agree to within 2.5 %, i.e. the bottleneck is capacity- rather than
 demand-limited, while at $q_\mathrm{in} = 2000$ veh/h the peak reaches 96 %
 of $\omega_0$. (b) Poisson-exposure maximum-likelihood estimates of the
@@ -116,8 +117,8 @@ grey band: $\pm10$ %. Catch & release: $+4.9$, $+7.4$, $+11.9$, $+19.4$ %
 $+3.5$, $+5.8$, $-24.8$, $-24.0$ % and $-7.4$, $-5.6$, $-28.1$, $-25.9$ %.
 At 72 km/h the classical constraint under-passes by a quarter in every
 scenario, whereas catch & release over-passes by 12–19 % at $A = 1$ and
-stays within $\pm10$ % at $A = 10$; the only transfer outside the band
-at $A = 10$ is 54 km/h, 2000 veh/h ($-12.8$ %).
+stays within $\pm10$ % at $A = 10$ except for the 54 km/h, 2000 veh/h
+transfer ($-12.8$ %).
 
 **Fig. 5. Density profiles** (`fig_profiles`), $u_\xi = 54$ km/h,
 $q_\mathrm{in} = 2500$ veh/h, at $t = 500$ and 700 s (slow phase) and 850 s
@@ -145,10 +146,12 @@ is below the classical one at 50–58 km/h (ratio 0.85–0.91) and at 72 km/h
 (0.90), within $\pm2$ % of it at 65, 79 and 86 km/h, and above it at 36 km/h
 (1.32) and 43 km/h (1.05); mean ratio 0.99. The two models fail $e_s$ in
 opposite directions: the classical through-flow past the vehicle is bounded
-by $(Q_\xi - u_\xi\sigma_\xi)_+$, which decays with $u_\xi$ (from
-$1.8\times10^{3}$ veh/h at 36 km/h to $0.85$–$1.3\times10^{3}$ veh/h for
-$u_\xi \ge 72$ km/h), giving $e_s$ within $\pm10$ % everywhere except
-72 km/h ($-29$ %); catch & release without a cap passes
+by $(Q_\xi - u_\xi\sigma_\xi)_+$, which decays linearly with $u_\xi$
+($1.1\times10^{3}$ veh/h at 36 km/h, $0.25\times10^{3}$ at 72 km/h, 0 at
+86 km/h; $\sigma_\xi = 24.3$ veh/km), so the classical flow through $X_q$
+falls from $1.8\times10^{3}$ veh/h at 36 km/h to $0.85$–$1.3\times10^{3}$
+veh/h for $u_\xi \ge 72$ km/h; its $e_s$ is within $\pm10$ % everywhere
+except 72 km/h ($-29$ %); catch & release without a cap passes
 $2.1$–$2.3\times10^{3}$ veh/h, rising with $u_\xi$, so $e_s$ increases
 monotonically from $-15$ % at 36 km/h to $+32$ % at 86 km/h ($+19$ % at
 72 km/h) and is within $\pm10$ % only for 43–54 km/h. SUMO passes
@@ -169,7 +172,7 @@ per-run min–max of $e_s$ and of the per-run density RMSE (which is why the
 latter differ from the RMSE column). The ablation block compares the
 adopted four-parameter sets with the five-parameter capped sets: the
 fit-scenario $W_1$ differs by $-0.09$ % ($A = 1$) and $+0.07$ % ($A = 10$),
-and, over the eight scenarios, $W_1$ by at most 0.9 veh km, $e_s$ by at
+and, over the eight scenarios, $W_1$ by at most 0.94 veh km, $e_s$ by at
 most 0.3 pp and the overtaking-flow error by at most 0.7 pp.
 
 ---
@@ -194,8 +197,9 @@ $+9$ % ($A = 10$).
 bars min–max over five runs) versus bottleneck speed for $A = 3$,
 $q_\mathrm{in} = 2500$ veh/h. Catch & release (no cap, solid) calibrated at
 54 km/h only and transferred with frozen $\kappa$; classical LWR+MB
-(dashed) has no fitted parameter. $W_1$: model better at 50–72 km/h except
-65, worse at 36–43 km/h. $e_s$: the classical bound under-passes at 72 km/h
+(dashed) has no fitted parameter. $W_1$: model better at 50–58 and 72 km/h,
+within 2 % of the classical value at 65–86 km/h, worse at 36–43 km/h.
+$e_s$: the classical bound under-passes at 72 km/h
 ($-29$ %), the uncapped model over-passes increasingly with speed
 ($+11$ % at 58 to $+32$ % at 86 km/h); SUMO's through-flow is
 speed-independent ($\approx 2.0\times10^{3}$ veh/h).
