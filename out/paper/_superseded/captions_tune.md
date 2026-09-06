@@ -1,0 +1,23 @@
+# Captions (E11 tune figures)
+
+Tuned parameters -- A = 1: $\kappa_c$ = 1.56e-01, $\kappa_r$ = 6.84e-03, $\gamma$ = 0.51, $w_s$ = 0.58 w, $Q_\xi$ = 2512 veh/h; A = 10: $\kappa_c$ = 3.80e-01, $\kappa_r$ = 8.70e-05, $\gamma$ = 0.00, $w_s$ = 0.40 w, $Q_\xi$ = 2290 veh/h.
+
+Model: DM-G capacity cap $Q_\xi$ + stuck-class congested branch $w_s$ + s-impermeable bottleneck interface + catch & release ($\ell = a + \gamma s$), all five parameters tuned per assertiveness on the u = 54 km/h, q = 2500 veh/h rep-mean density field by 1-Wasserstein distance (dt = 1 s search, dt = 0.5 s evaluation); every other scenario is a zero-refit transfer. Classical baseline: scalar LWR + Delle Monache-Goatin moving bottleneck, $Q_\xi$ = 2000 veh/h, no catch & release.
+
+A = 1: Capacity cap at the tuned point: omega_max = 1202 veh/h vs. an uncapped peak overtaking flow of 1158 veh/h -> the cap never engages (max |drho| without the cap 0.00 veh/km, W1 without the cap 139.0); the throttle is the s-impermeable interface plus capture. A = 10: Capacity cap at the tuned point: omega_max = 980 veh/h vs. an uncapped peak overtaking flow of 1158 veh/h -> the cap engages only marginally (max |drho| without the cap 0.50 veh/km, W1 without the cap 165.4); the throttle is the s-impermeable interface plus capture.
+
+## fig_heatmaps_q2500
+
+**Fig. (density fields, $q_{in}$ = 2500 veh/h, $u_\xi$ = 54 km/h, calibration scenario).** Total density $\rho(x,t)$ [veh/km] on the SUMO measurement grid (100 m x 10 s) for low (A = 1, top) and high (A = 10, bottom) lane-changing assertiveness: SUMO five-run mean (left), classical LWR + moving-bottleneck model (centre) and the tuned catch & release model (right); white line = controlled vehicle trajectory (slow phase 250-750 s). Shared colour scale 0-90 veh/km. 1-Wasserstein distance to the SUMO field (classical / tuned): A = 1 174 / 139 veh km, A = 10 190 / 165 veh km. At A = 1 the tuned model reproduces the dense, slowly growing queue and its release fan; at A = 10 it produces the broad 'slow but not stuck' band that the classical model cannot express.
+
+## fig_heatmaps_q2000
+
+**Fig. (density fields, $q_{in}$ = 2000 veh/h, $u_\xi$ = 54 km/h, zero-refit transfer).** Total density $\rho(x,t)$ [veh/km] on the SUMO measurement grid (100 m x 10 s) for low (A = 1, top) and high (A = 10, bottom) lane-changing assertiveness: SUMO five-run mean (left), classical LWR + moving-bottleneck model (centre) and the tuned catch & release model (right); white line = controlled vehicle trajectory (slow phase 250-750 s). Shared colour scale 0-90 veh/km. 1-Wasserstein distance to the SUMO field (classical / tuned): A = 1 147 / 131 veh km, A = 10 122 / 146 veh km. At A = 1 the tuned model reproduces the dense, slowly growing queue and its release fan; at A = 10 it produces the broad 'slow but not stuck' band that the classical model cannot express.
+
+## fig_es
+
+**Fig. (relative cumulative-flow error).** Relative error $e_s$ of the cumulative flow through $X_q$ = 15 km over the ECC22 window [576 s, CAV arrival at $X_q$] for the eight core scenarios, grouped by assertiveness (A = 1 left, A = 10 right; within each group $u_\xi$ = 54, 54, 72, 72 km/h and $q_{in}$ = 2000, 2500, 2000, 2500 veh/h). Lines: mean over the five SUMO runs; shaded: min-max over runs; orange dashed-marker line = classical LWR + moving bottleneck, blue = tuned catch & release model; grey band = $\pm$10 %. Only the 54 km/h, 2500 veh/h scenarios are calibration scenarios. Tuned $e_s$ (mean): A1 u15 q2500 +7.1%, A1 u15 q2000 +5.0%, A1 u20 q2000 +12.1%, A1 u20 q2500 +19.5%, A10 u15 q2500 +4.7%, A10 u15 q2000 -13.1%, A10 u20 q2000 -5.3%, A10 u20 q2500 +8.7%; classical: +5.8%, +3.5%, -24.8%, -24.0%, -5.6%, -7.4%, -28.1%, -25.9%.
+
+## fig_profiles
+
+**Fig. (density profiles, $u_\xi$ = 54 km/h, $q_{in}$ = 2500 veh/h).** Snapshots at t = 500 s and 700 s (slow phase) and 850 s (100 s after release) for A = 1 (left) and A = 10 (right): SUMO five-run mean (black), classical LWR + moving bottleneck (orange dashed) and the tuned catch & release model (blue, total density) with its stuck ($s$, red) and free ($f$, green, stacked) classes; grey dashed line = critical density 48.5 veh/km, dotted vertical line = controlled vehicle. Wake density 0.2-1 km behind the CAV (t in [600, 740] s), data / classical / tuned: A = 1 58.6 / 68.4 / 55.3 veh/km; A = 10 55.4 / 68.4 / 48.4 veh/km. The classical model queues at the congested-branch density and empties its queue as a kinematic wave; the tuned two-class model keeps the aggregate state inside the flux function (stuck and free streams coexisting) and releases the platoon as a dispersing front.

@@ -188,6 +188,33 @@ See `E10_results.md`.
 
 ![General model vs kludge vs data](out/e10/fig_profiles_final_e10_A1_u15_q2500.png)
 
+**Step 12 — Best instantiation and the paper figure set (E11, `out/paper/`).**
+With the general structure fixed, we instantiated it per assertiveness by
+fitting four parameters (κ_c, κ_r, the capture-localization weight γ, and the
+stuck-class wave speed w_s) to the u=54 km/h, q=2500 veh/h field with the
+1-Wasserstein objective, and validated on the other three scenarios per A with
+zero refitting. A capacity-cap ablation showed the Delle Monache–Goatin cap is
+**not needed** once the bottleneck interface is impermeable to stuck vehicles
+(fit-scenario W1 changes by < 0.1% without it), so the adopted final model has
+no capacity constraint at all: catch & release + stuck-class branch +
+impermeable interface. Headline: on the calibration scenarios W1 improves 20%
+(A=1) and 13% (A=10) over classical LWR+MB with |e_s| ≤ 7.4%; at 72 km/h the
+model beats the classical baseline in W1 in all four transfers but overshoots
+the cumulative flow (+12…+19% at A=1) where the classical cap undershoots
+(−24…−28%). The assertiveness sweep (all 14 A values, 140 runs) gives the
+micro–macro link figure: κ_r rises ~3 orders of magnitude from A=1 to A=10
+while κ_c stays flat, and the measured overtaking flow reproduces the A≈2–3
+maximum of ECC22. Honest gaps: the A=10 model over-forms a band at q=2000
+(W1 146 vs classical 122), and neither model reproduces SUMO's
+speed-independent through-flow across bottleneck speeds (transfer figure).
+Figures (300 dpi PNG + PDF, captions in `out/paper/captions.md`):
+Fig 1 `fig_fd` (calibrated FD), Fig 2 `fig_assertiveness` (ω, κ, χ vs A),
+Fig 3 `fig_heatmaps_q2500` (+ S1 `fig_heatmaps_q2000`), Fig 4 `fig_es`
+(cumulative-flow error with 5-run min/max), Fig 5 `fig_profiles` (stuck/free
+split), Fig 6 `fig_transfer` (speed transfer); Table 1 `table_metrics.md`.
+
+![Assertiveness sweep](out/paper/fig_assertiveness.png)
+
 ---
 
 ## How to run
@@ -215,6 +242,9 @@ python3 e8_final.py              # E8: final hybrid figures + config
 python3 e9_ladder.py --run       # E9: ratio-form leader-loss ladder (negative result)
 python3 e10_ladder.py --run      # E10: interface-constraint / leader-loss attribution ladder
 python3 e10_final.py             # E10: final general model vs the kludge
+python3 e11_tune.py --run        # E11: 4/5-parameter instantiation per A (--ablate: cap ablation, --figures)
+python3 e4_sweep.py              # E11: assertiveness sweep (14 A values) -> fig_assertiveness
+python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
 ```
 
 ## File guide
@@ -248,6 +278,10 @@ python3 e10_final.py             # E10: final general model vs the kludge
 | `e9_ladder.py` | **E9**: ratio-form leader-loss ladder (the negative result: in-queue release, numerical plume). |
 | `e10_ladder.py` | **E10**: one-at-a-time attribution — s-impermeable interface vs connectivity leader-loss vs w_s. |
 | `e10_final.py` | **E10**: the final general model (cap + w_s + s-impermeable interface) vs the E8 kludge, with figures. |
+| `paperfig.py` | Shared publication figure style (serif, column widths, colour conventions; PNG + PDF export to `out/paper/`). |
+| `e11_tune.py` | **E11**: per-assertiveness instantiation (Nelder–Mead on W1), capacity-cap ablation, metrics table, Figs 3–5. |
+| `e4_sweep.py` | **E11**: assertiveness sweep — classification + Poisson MLE for all 14 A values, Fig 2. |
+| `e11_transfer_fd.py` | **E11**: speed-transfer sweep (A=3 anchor, zero refit) and the FD figure, Figs 1 and 6. |
 
 ### Tests and independent audits
 
@@ -288,6 +322,7 @@ python3 e10_final.py             # E10: final general model vs the kludge
 | `e7/` | Ablation table, transfer curve + JSON, winner profile/heatmap figures (incl. the t=850 post-release panel). |
 | `e8/` | Ladder JSON, hybrid/candidate evaluations, final-configuration figures. |
 | `e9/`, `e10/` | Leader-loss ladder (E9), attribution ladder + final general-model configuration and figures (E10). |
+| `e4/`, `paper/` | Assertiveness-sweep classification + κ(A) table (E4); the paper figure set, metrics table, captions, tuned configuration (E11). |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas
