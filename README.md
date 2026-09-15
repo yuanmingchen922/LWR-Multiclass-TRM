@@ -215,6 +215,37 @@ split), Fig 6 `fig_transfer` (speed transfer); Table 1 `table_metrics.md`.
 
 ![Assertiveness sweep](out/paper/fig_assertiveness.png)
 
+### Step 13 — Back to the pure E7 model on the integer ladder A = 1…10 (E12)
+
+Mladen's fifth review asked to roll back to E7 and iterate from there with
+**no kludge and no imposed physical constraint** (the downstream flow is still
+affected after the CAV speeds up, so stuck vehicles must not be forced free),
+to restrict assertiveness to the ten integers 1…10, to look at every A's
+heatmap, and to test the hypothesis "low A → high κ_c, high A → low κ_c".
+`e12_assertiveness.py` runs exactly the E7 structure (uncapped catch &
+release, optional γ and w_s; the four post-E7 knobs are forbidden by a guard
+and pinned by tests), fits the four E7 configurations per A on 54 km/h /
+2500 veh/h, transfers to 2000 veh/h and 72 km/h with zero refitting, and
+compares nested shared-parameter models over all ten A (one κ pair for all A;
+κ_c(A) free; κ_r(A) free; both free). Headline: **the pure E7 model beats
+classical LWR+MB in W1 at every A and in all 40 scenario cells** (14–27 %
+for A ≥ 3; the "A = 10 worse than classical" verdict came from the E10/E11
+interface + cap configuration). But at A ≥ 4 it wins by the wrong mechanism:
+a 3 km dilute stuck band (33 veh/km, SUMO 55) with 25–50 phantom stuck
+vehicles and a 40 % overtaking deficit. The hypothesis is **undecidable from
+density fields**: κ_c(A)-free and κ_r(A)-free models are 0.02 % apart because
+for A ≥ 2 the fit sits on a fast-equilibrium ridge where only the ratio
+κ_c/κ_r ≈ 10 is identified (flat in the magnitude above κ_r ≈ 0.1); only
+A = 1 needs slow kinetics. The microscopic event calibration, which does
+separate the two, says A acts through κ_r (Spearman +0.99), not κ_c — but
+those rates do not reproduce the fields (W1 197–262 for A ≥ 3). Proposed
+next step: calibrate on W1 + queue size + overtaking flow to break the
+degeneracy. Report: `E12_results.md`; figures in `out/e12/` (heatmap grids
+for every A at both inflows, κ vs A, nested-model comparison, ridge scan,
+profiles).
+
+![E12 heatmaps A=1..5](out/e12/fig_e12_heat_q2500_A1-5.png)
+
 ---
 
 ## How to run
@@ -245,6 +276,8 @@ python3 e10_final.py             # E10: final general model vs the kludge
 python3 e11_tune.py --run        # E11: 4/5-parameter instantiation per A (--ablate: cap ablation, --figures)
 python3 e4_sweep.py              # E11: assertiveness sweep (14 A values) -> fig_assertiveness
 python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
+python3 e12_assertiveness.py --run --figures --summary   # E12: pure E7 model, A = 1..10 (--smoke for a 10 s check)
+python3 -m pytest -q test_e12.py && python3 audit_e12.py  # E12 tests + independent audit
 ```
 
 ## File guide
@@ -280,6 +313,8 @@ python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
 | `e10_final.py` | **E10**: the final general model (cap + w_s + s-impermeable interface) vs the E8 kludge, with figures. |
 | `paperfig.py` | Shared publication figure style (serif, column widths, colour conventions; PNG + PDF export to `out/paper/`). |
 | `e11_tune.py` | **E11**: per-assertiveness instantiation (Nelder–Mead on W1), capacity-cap ablation, metrics table, Figs 3–5. |
+| `e12_assertiveness.py` | **E12**: pure E7 model on A = 1…10 — purity guard, per-A C1–C4 fits and transfers (stage a), nested shared-parameter hypothesis test (stage b), event-κ field check + ridge scan (stage e). |
+| `e12_figures.py` | E12 figures (heatmap grids for every A, κ vs A, nested-model bars, ridge scan, profiles) and `summary.md`. |
 | `e4_sweep.py` | **E11**: assertiveness sweep — classification + Poisson MLE for all 14 A values, Fig 2. |
 | `e11_transfer_fd.py` | **E11**: speed-transfer sweep (A=3 anchor, zero refit) and the FD figure, Figs 1 and 6. |
 
@@ -287,13 +322,15 @@ python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
 
 | File | What it does |
 |---|---|
-| `test_solver.py` | 9 unit tests: mass ledger, invariant domain, pure-class front speed, Riemann shock vs RH, queue smoke tests, CFL guard, cap-off bit-identity, capped steady state vs the analytic solution. |
+| `test_solver.py` | 24 unit tests: mass ledger, invariant domain, pure-class front speed, Riemann shock vs RH, queue smoke tests, CFL guard, cap-off bit-identity, capped steady state vs the analytic solution. |
 | `audit_solver.py` | Independent numerical audit of the solver (written by a separate review pass): re-derives the mass balance step by step, dt-refinement, reaction exactness vs closed form. |
 | `audit_cap.py` | Independent audit of the capacity cap: inertness when disabled, conservation with the cap active, analytic steady state re-derived by bisection, sign guards. |
 | `audit_dispersion.py` | Independent sympy re-derivation of all Jacobians and the dispersion relation; compares against the module to machine precision (exit 0 = pass). |
 | `audit_e7.py` | Independent audit of the gamma/w_s/P_s solver knobs (bit-identity, invariants, cap-path regression). |
 | `audit_e8.py` | Independent audit of the downstream-release constraint (bit-identity vs git, boundary semantics, invariants). |
 | `audit_e9.py`, `audit_e10.py` | Independent audits of the leader-loss terms and the impermeable interface (bit-identity vs git HEAD, invariants, exactness, generality checks). |
+| `test_e12.py` | 17 tests: solver defaults are the pure path, purity guard rejects every forbidden knob, A set is exactly 1…10, data routing (out/e1 vs out/e4), bit-identity of the E12 solver bridge with E7. |
+| `audit_e12.py` | Independent audit of E12: purity of every stored configuration, bit-level reproduction of W1 values, grid entries, winner rule, hypothesis totals + nestedness, Spearman values, event metrics, summary vs JSON. |
 
 ### Reports (read these for the full story)
 
@@ -307,6 +344,7 @@ python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
 | `E7_results.md` | Wasserstein calibration, the stuck-class flux function fix (supercritical wake + restored rarefaction), the A=10 dynamic-equilibrium verdict, and the speed-transfer study. |
 | `E8_results.md` | The downstream-release constraint, the plug discovery (why the capacity term is structurally necessary), the closed-form no-waviness condition, and the final hybrid configuration. |
 | `E10_results.md` | Why the kludge had to go, the failed general attempt (E9), the one-at-a-time ladder, the interface constraint that replaces it, and the final general model with honest gaps. |
+| `E12_plan.md`, `E12_results.md` | The rollback to the pure E7 model: every A vs classical, the A ≥ 4 mechanism problem, why the κ_c-vs-κ_r hypothesis is undecidable from density fields (fast-equilibrium ridge), what the event calibration says, and the proposed joint-objective calibration. |
 
 ### Outputs (`out/`)
 
@@ -323,6 +361,7 @@ python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
 | `e8/` | Ladder JSON, hybrid/candidate evaluations, final-configuration figures. |
 | `e9/`, `e10/` | Leader-loss ladder (E9), attribution ladder + final general-model configuration and figures (E10). |
 | `e4/`, `paper/` | Assertiveness-sweep classification + κ(A) table (E4); the paper figure set, metrics table, captions, tuned configuration (E11). |
+| `e12/` | Pure-E7 ladder: `ladder.json` (per-A fits, evaluations, classical, grid landscape), `hypothesis.json` (nested models, trends), `extras.json` (event κ in the field, ridge scan), `fields_A*.npz`, `summary.md`, figures `fig_e12_*`. |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas
