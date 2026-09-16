@@ -1,0 +1,36 @@
+[PASS] 1a purity of every fitted SimConfig (10 A x C1..C4): 40 configs rebuilt at dt=0.5, violations=[]
+[PASS] 1b forbidden knob strings absent from e12_*.py: 1524 lines scanned, hits=[]
+[PASS] 1c ladder.json A set == A1..A10: keys=['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10'], meta A_levels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[PASS] 1d hypothesis.json ladders / per-A tables keyed A1..A10: ladders of M_c, M_r, M_c_ws, M_r_ws, M_both(kc,kr) + per_A_W1 of 7 models
+[PASS] 1e classical block is the only capped model: meta forbidden_knobs={'q_xi_max': 'off', 'downstream_release': 'off', 'eta_la': 'off', 's_impermeable': 'off'}
+[PASS] 2 classical W1 A=1 u15_q2500: recomputed 173.740737416 stored 173.740737416 rel 0.0e+00
+[PASS] 2 winner C4 W1 A=1 u15_q2500: kc=5.6422e-02 kr=4.3602e-05 gamma=0.6570398311898775 ws=0.6087374383030455 recomputed 148.921978787 stored 148.921978787 rel 0.0e+00
+[PASS] 2 classical W1 A=1 u15_q2000: recomputed 146.544505363 stored 146.544505363 rel 0.0e+00
+[PASS] 2 winner C4 W1 A=1 u15_q2000: kc=5.6422e-02 kr=4.3602e-05 gamma=0.6570398311898775 ws=0.6087374383030455 recomputed 146.569789821 stored 146.569789821 rel 0.0e+00
+[PASS] 2 classical W1 A=5 u15_q2500: recomputed 173.879865226 stored 173.879865226 rel 0.0e+00
+[PASS] 2 winner C3 W1 A=5 u15_q2500: kc=4.0518e+00 kr=3.6823e-01 gamma=None ws=0.6466015813902672 recomputed 143.267548048 stored 143.267548048 rel 0.0e+00
+[PASS] 2 classical W1 A=5 u15_q2000: recomputed 119.469660668 stored 119.469660668 rel 0.0e+00
+[PASS] 2 winner C3 W1 A=5 u15_q2000: kc=4.0518e+00 kr=3.6823e-01 gamma=None ws=0.6466015813902672 recomputed 95.525619568 stored 95.525619568 rel 0.0e+00
+[PASS] 2 classical W1 A=10 u15_q2500: recomputed 190.352078377 stored 190.352078377 rel 0.0e+00
+[PASS] 2 winner C1 W1 A=10 u15_q2500: kc=4.5937e+00 kr=3.7809e-01 gamma=None ws=None recomputed 157.234006228 stored 157.234006228 rel 0.0e+00
+[PASS] 2 classical W1 A=10 u15_q2000: recomputed 122.024582248 stored 122.024582248 rel 0.0e+00
+[PASS] 2 winner C1 W1 A=10 u15_q2000: kc=4.5937e+00 kr=3.7809e-01 gamma=None ws=None recomputed 107.298027227 stored 107.298027227 rel 0.0e+00
+[PASS] 3 grid_C1 6 random cells A=1: max rel err 0.0e+00; (1,3) 245.9738|245.9738, (3,2) 293.9948|293.9948, (2,4) 246.0365|246.0365, (1,4) 246.1842|246.1842, (0,1) 245.6407|245.6407, (4,2) 458.5843|458.5843
+[PASS] 3 C1 objective_dt1 <= grid min A=1: objective_dt1 162.499975 grid min 168.345890
+[PASS] 3 grid min consistency A=1: stored min 168.345890 W.min 168.345890 fit.grid_objective_dt1 168.345890
+[PASS] 3 grid_C1 6 random cells A=10: max rel err 0.0e+00; (4,1) 463.6025|463.6025, (2,4) 264.3927|264.3927, (4,4) 183.1749|183.1749, (3,4) 263.1808|263.1808, (3,2) 316.8238|316.8238, (5,3) 572.7583|572.7583
+[PASS] 3 C1 objective_dt1 <= grid min A=10: objective_dt1 167.715498 grid min 183.174896
+[PASS] 3 grid min consistency A=10: stored min 183.174896 W.min 183.174896 fit.grid_objective_dt1 183.174896
+[PASS] 4 e7_ablation.pick_winner re-applied, winner + rule string: A1:C4 A2:C3 A3:C3 A4:C3 A5:C3 A6:C1 A7:C3 A8:C3 A9:C1 A10:C1
+[PASS] 5 totals_dt1 == sum of per_A_W1_dt1 (7 models): max rel err 0.0e+00; M_none=1605.4402, M_c=1558.1514, M_r=1558.4105, M_both=1544.1843, M_none_ws=1548.7437, M_c_ws=1492.6628, M_r_ws=1492.7401
+[PASS] 5 totals_dt05 == sum of per_A_W1_dt05 (7 models): max rel err 0.0e+00; M_none=1529.2515, M_c=1505.7973, M_r=1505.8562, M_both=1475.1524, M_none_ws=1496.5752, M_c_ws=1442.2594, M_r_ws=1447.5414
+[PASS] 5 nestedness of sum W1 (dt=1), tolerance 0.5 %: exact(no tol)=True; M_none 1605.44 >= M_c 1558.15; M_c 1558.15 >= M_both 1544.18; M_none 1605.44 >= M_r 1558.41; M_r 1558.41 >= M_both 1544.18; M_none_ws 1548.74 >= M_c_ws 1492.66; M_none_ws 1548.74 >= M_r_ws 1492.74
+[PASS] 5 Spearman(A, ladder) recomputed: C1 kc/kr/ratio, M_c, M_r, events: max rel err 0.0e+00; C1.kappa_c rho=+0.2121 p=0.5563; C1.kappa_r rho=+0.2121 p=0.5563; C1.ratio rho=+0.2727 p=0.4458; M_c.kappa_c rho=+0.9119 p=0.0002; M_r.kappa_r rho=-0.8667 p=0.0012; events_u15_q2500.kappa_c rho=+0.1394 p=0.7009; events_u15_q2500.kappa_r rho=+0.9879 p=0.0000; events_u15_q2000.kappa_c rho=-0.8424 p=0.0022; events_u15_q2000.kappa_r rho=+0.9394 p=0.0001
+[PASS] 5 M_c A=3: stored W1 <= 1.01 x 41-point log10 kappa_c scan minimum: stored 142.8256 scan min 147.0621 at log10 kc=+1.550 (kr shared 3.1623e+00), scan max 460.33
+[PASS] 5 M_c A=3: per_A_W1_dt1 == w1_one(3, ladder.A3, shared.kr): recomputed 142.825628322 stored 142.825628322 rel 0.0e+00 (kc=2.9736e+01)
+[PASS] 6 A=5 winner C3 e_s / omega_err (+ rho_rmse, Ns_mae) via ev4.metrics: max rel err 0.0e+00; e_s 0.047104|0.047104, omega_err -0.379989|-0.379989, rho_rmse 5.515223|5.515223, Ns_mae 27.225156|27.225156
+[PASS] 7 summary section 1: W1 cl/CR x 4 scenarios x 10 A at 0.1 rounding: 10 rows, 80 numbers, bad=[]
+[PASS] 7 summary section 5: totals dt=1 / dt=0.5 / n_params vs hypothesis.json: models=['M_none', 'M_c', 'M_r', 'M_both', 'M_none_ws', 'M_c_ws', 'M_r_ws'], bad=[]
+[PASS] 7 figures: every fig_e12_*.png has a .pdf twin and is > 20 kB: 9 png: fig_e12_data_heat.png 844 kB, fig_e12_heat_q2000_A1-5.png 606 kB, fig_e12_heat_q2000_A6-10.png 602 kB, fig_e12_heat_q2500_A1-5.png 650 kB, fig_e12_heat_q2500_A6-10.png 658 kB, fig_e12_hypothesis.png 141 kB, fig_e12_kappa_vs_A.png 224 kB, fig_e12_profiles.png 367 kB, fig_e12_ridge.png 308 kB; bad=[]
+
+34/34 checks passed

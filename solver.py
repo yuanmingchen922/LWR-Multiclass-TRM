@@ -287,6 +287,10 @@ class SimResult:
     injected: float        # cumulative admitted inflow at x = 0 [veh]
     outflowed: float       # cumulative outflow at x = L [veh]
     on_road: float         # final passenger-car mass sum(f + s) dx [veh]
+    cum_cap: np.ndarray = None   # (n_save,) cumulative gross captures [veh]
+    cum_rel: np.ndarray = None   # (n_save,) cumulative gross releases [veh]
+    #                              (E13 counters; sum over cells of the exact
+    #                              reaction integrals, see reaction_exact)
 
 
 # --------------------------------------------------------------------------
@@ -344,7 +348,8 @@ def cav_density(cfg: SimConfig, t: float, nx: int) -> np.ndarray:
 
 def reaction_exact(f, s, a, rho, dv, kappa_c: float, kappa_r: float,
                    P: float, dt: float, capture_form: str = "lf",
-                   gamma: float | None = None, mu_extra=None):
+                   gamma: float | None = None, mu_extra=None,
+                   return_gross: bool = False):
     """Exact update of the frozen-coefficient reaction ODE over dt.
 
     With sigma = kappa_c ell dv, mu = kappa_r (P - rho)_+ dv [+ mu_extra],
@@ -364,6 +369,14 @@ def reaction_exact(f, s, a, rho, dv, kappa_c: float, kappa_r: float,
     leader_loss_rate); it carries no Delta v factor and only enlarges mu,
     so conservation and positivity are unchanged.  None (default) leaves
     the legacy update bit-identical.
+    return_gross (E13): additionally return the GROSS capture and release
+    integrals over the substep, C = int_0^dt sigma f(t') dt' and
+    R = int_0^dt mu s(t') dt' [veh/m per cell], closed form
+        C = sigma [f_eq dt + (f - f_eq) g],  R = mu [s_eq dt + (s - s_eq) g],
+        g = (1 - exp(-theta dt)) / theta  (g = dt where theta = 0),
+    with s_eq = p - f_eq; C - R equals the net change s* - s exactly, so
+    the counters are consistent with the update to round-off.  The update
+    itself is unchanged (same operations, bit-identical).
     """
     f = np.asarray(f, float)
     s = np.asarray(s, float)
@@ -383,7 +396,13 @@ def reaction_exact(f, s, a, rho, dv, kappa_c: float, kappa_r: float,
     f_new = np.where(theta > 0.0,
                      f_eq + (f - f_eq) * np.exp(-theta * dt),
                      f)
-    return f_new, p - f_new
+    if not return_gross:
+        return f_new, p - f_new
+    g = np.where(theta > 0.0, (1.0 - np.exp(-theta * dt)) / th_safe, dt)
+    s_eq = p - f_eq
+    cap = sigma * (f_eq * dt + (f - f_eq) * g)
+    rel = mu * (s_eq * dt + (s - s_eq) * g)
+    return f_new, p - f_new, cap, rel
 
 
 # --------------------------------------------------------------------------
@@ -696,6 +715,7 @@ def simulate(cfg: SimConfig) -> SimResult:
 
     n_steps = int(round(cfg.t_end / cfg.dt))
     injected = denied = outflowed = 0.0
+    cum_cap = cum_rel = 0.0
     saves: list[tuple] = []
 
     def _save(step: int) -> None:
@@ -720,7 +740,7 @@ def simulate(cfg: SimConfig) -> SimResult:
                     and cfg.t_slow <= t <= cfg.t_fast and u_s < cfg.v_f):
                 sigma_xi = cfg.beta * cfg.w * cfg.P / (cfg.v_f + cfg.w)
                 om = min(om, max(cfg.q_xi_max - u_s * sigma_xi, 0.0))
-        saves.append((t, a, f.copy(), s.copy(), xc, om))
+        saves.append((t, a, f.copy(), s.copy(), xc, om, cum_cap, cum_rel))
 
     for n in range(n_steps):
         t = n * cfg.dt
@@ -755,9 +775,12 @@ def simulate(cfg: SimConfig) -> SimResult:
                 c_wave = cfg.w if cfg.w_s is None else cfg.w_s
                 mu_ll = leader_loss_rate(a_star, s, cfg.dx, cfg.eta_la,
                                          c_wave)
-        f, s = reaction_exact(f, s, a_star, rho_star, dv, cfg.kappa_c,
-                              cfg.kappa_r, cfg.P, cfg.dt, cfg.capture_form,
-                              cfg.gamma, mu_extra=mu_ll)
+        f, s, cap_step, rel_step = reaction_exact(
+            f, s, a_star, rho_star, dv, cfg.kappa_c, cfg.kappa_r, cfg.P,
+            cfg.dt, cfg.capture_form, cfg.gamma, mu_extra=mu_ll,
+            return_gross=True)
+        cum_cap += float(np.sum(cap_step)) * cfg.dx
+        cum_rel += float(np.sum(rel_step)) * cfg.dx
         # Downstream-release constraint (definitional, zero parameters): a
         # vehicle cannot be caught by a bottleneck that is behind it, so s
         # strictly downstream of the CAV cell converts to f immediately.
@@ -788,4 +811,6 @@ def simulate(cfg: SimConfig) -> SimResult:
         injected=injected,
         outflowed=outflowed,
         on_road=float(np.sum(f + s) * cfg.dx),
+        cum_cap=np.array([sv[6] for sv in saves]),
+        cum_rel=np.array([sv[7] for sv in saves]),
     )

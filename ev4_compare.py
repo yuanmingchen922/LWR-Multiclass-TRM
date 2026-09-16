@@ -197,10 +197,15 @@ def regrid_sim(res):
         return arr.reshape(N_T, N_CELL, 2).mean(axis=2) * 1000.0
 
     a, f, s = field(res.a), field(res.f), field(res.s)
-    return dict(tt=t_data, a=a, f=f, s=s, rho_tot=a + f + s,
-                x_cav=np.asarray(res.x_cav, float)[it],
-                N_s=np.asarray(res.N_s, float)[it],
-                omega=np.asarray(res.omega, float)[it] * 3600.0)   # veh/h
+    out = dict(tt=t_data, a=a, f=f, s=s, rho_tot=a + f + s,
+               x_cav=np.asarray(res.x_cav, float)[it],
+               N_s=np.asarray(res.N_s, float)[it],
+               omega=np.asarray(res.omega, float)[it] * 3600.0)   # veh/h
+    for key in ("cum_cap", "cum_rel"):          # E13 gross event counters
+        arr = getattr(res, key, None)
+        if arr is not None:
+            out[key] = np.asarray(arr, float)[it]
+    return out
 
 
 # ---------------------------------------------------------------------------

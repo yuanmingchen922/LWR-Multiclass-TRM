@@ -246,6 +246,35 @@ profiles).
 
 ![E12 heatmaps A=1..5](out/e12/fig_e12_heat_q2500_A1-5.png)
 
+### Step 14 — Joint calibration: can queue, overtaking and event counts break the κ_c/κ_r degeneracy? (E13)
+
+E12 left one question open (which rate carries the assertiveness
+dependence) and one problem (phantom queues at A ≥ 4). E13 keeps the model,
+the parameters and the purity guard of E12 and changes only the scoring
+rule: J = W1/W1_cl + λ [queue-size error + overtaking error + event-count
+error]. Two independent methodology reviews reshaped the plan before the
+main run, and a first version with queue and overtaking only (`out/e13_v1/`)
+confirmed their warning: those two observables depend on the ratio κ_c/κ_r
+only, like the density field. The gross capture/release counts do not, so
+the solver now returns them exactly (bit-identical update) and the E1/E4
+per-run event series enter the objective. Headline: with the event counts
+the two rates are separately identified (the ridge residual jumps from 0 to
+~0.9 dex, the fitted turnover moves from 0.1 s to 300–650 s), κ_r(A) is the
+better single carrier and its advantage grows with λ, the macroscopic κ_c
+lands on the microscopic value (0.03–0.05 veh⁻¹) — but the A-dependence
+that survives is small (A = 1 never releases; A ≥ 2 release at ≈ 1e-3
+veh⁻¹, flat), the macroscopic κ_r stays 3–16× below the event-based one,
+and the hypothesis "κ_c falls with A" is not supported. The pre-registered
+reachable-set check settles the structural question: for A ≥ 3 the pure
+model reaches SUMO's mechanism (few stuck, full overtaking) only by giving up
+the wedge (W1 19–37 % above classical) — the wedge in this model *is*
+parked stuck mass. At the adopted λ* = 0.07 the model keeps the field (9/10
+A better than classical), fixes overtaking (mean 5 %) and the event counts
+(0.37 dex), and still holds 3–10× too many stuck vehicles. Report:
+`E13_results.md`; figures in `out/e13/`.
+
+![E13 trade-off](out/e13/fig_e13_gap_vs_lambda.png)
+
 ---
 
 ## How to run
@@ -278,6 +307,8 @@ python3 e4_sweep.py              # E11: assertiveness sweep (14 A values) -> fig
 python3 e11_transfer_fd.py       # E11: speed transfer + FD figure (paper style)
 python3 e12_assertiveness.py --run --figures --summary   # E12: pure E7 model, A = 1..10 (--smoke for a 10 s check)
 python3 -m pytest -q test_e12.py && python3 audit_e12.py  # E12 tests + independent audit
+python3 e13_joint.py --run --figures --summary            # E13: joint calibration, ~40 min (--smoke: 1 min)
+python3 -m pytest -q test_e13.py && python3 audit_e13.py  # E13 tests + independent audit
 ```
 
 ## File guide
@@ -315,6 +346,8 @@ python3 -m pytest -q test_e12.py && python3 audit_e12.py  # E12 tests + independ
 | `e11_tune.py` | **E11**: per-assertiveness instantiation (Nelder–Mead on W1), capacity-cap ablation, metrics table, Figs 3–5. |
 | `e12_assertiveness.py` | **E12**: pure E7 model on A = 1…10 — purity guard, per-A C1–C4 fits and transfers (stage a), nested shared-parameter hypothesis test (stage b), event-κ field check + ridge scan (stage e). |
 | `e12_figures.py` | E12 figures (heatmap grids for every A, κ vs A, nested-model bars, ridge scan, profiles) and `summary.md`. |
+| `e13_joint.py` | **E13**: joint calibration of the pure E7 model — objective W1 + λ(queue + overtaking + event counts), reachable-set pre-check (stage p), per-(A, λ) fits in ridge coordinates (a), λ selection (f), nested models with jackknife and ablations (b), identifiability / turnover / resolution (e). |
+| `e13_figures.py` | E13 figures (hull, trade-off, gap vs λ, κ vs A, metrics vs A, heatmaps, profiles, ridge) and `summary13.md`. |
 | `e4_sweep.py` | **E11**: assertiveness sweep — classification + Poisson MLE for all 14 A values, Fig 2. |
 | `e11_transfer_fd.py` | **E11**: speed-transfer sweep (A=3 anchor, zero refit) and the FD figure, Figs 1 and 6. |
 
@@ -331,6 +364,8 @@ python3 -m pytest -q test_e12.py && python3 audit_e12.py  # E12 tests + independ
 | `audit_e9.py`, `audit_e10.py` | Independent audits of the leader-loss terms and the impermeable interface (bit-identity vs git HEAD, invariants, exactness, generality checks). |
 | `test_e12.py` | 17 tests: solver defaults are the pure path, purity guard rejects every forbidden knob, A set is exactly 1…10, data routing (out/e1 vs out/e4), bit-identity of the E12 solver bridge with E7. |
 | `audit_e12.py` | Independent audit of E12: purity of every stored configuration, bit-level reproduction of W1 values, grid entries, winner rule, hypothesis totals + nestedness, Spearman values, event metrics, summary vs JSON. |
+| `test_e13.py` | 11 tests: objective terms and ablation weights, exact event counters (cum_cap − cum_rel = N_s), ε_R = 0 at the data counts, jackknife folds, purity of every run, ridge coordinates, regrid at other dx. |
+| `audit_e13.py` | Independent audit of E13 v2: purity, counters, reproduction of every winner's J parts, flags and sweep sums, selection rules, nested totals/nestedness/η/ridge residual, jackknife SE, ridge and resolution entries, summary vs JSON. |
 
 ### Reports (read these for the full story)
 
@@ -345,6 +380,7 @@ python3 -m pytest -q test_e12.py && python3 audit_e12.py  # E12 tests + independ
 | `E8_results.md` | The downstream-release constraint, the plug discovery (why the capacity term is structurally necessary), the closed-form no-waviness condition, and the final hybrid configuration. |
 | `E10_results.md` | Why the kludge had to go, the failed general attempt (E9), the one-at-a-time ladder, the interface constraint that replaces it, and the final general model with honest gaps. |
 | `E12_plan.md`, `E12_results.md` | The rollback to the pure E7 model: every A vs classical, the A ≥ 4 mechanism problem, why the κ_c-vs-κ_r hypothesis is undecidable from density fields (fast-equilibrium ridge), what the event calibration says, and the proposed joint-objective calibration. |
+| `E13_plan.md`, `E13_results.md` | Joint calibration: the two methodology reviews and the v1 negative result, the event-count term, the reachable-set check (wedge vs mechanism), the λ sweep, the nested test with jackknife and ablations, micro–macro agreement, resolution caveat. |
 
 ### Outputs (`out/`)
 
@@ -362,6 +398,7 @@ python3 -m pytest -q test_e12.py && python3 audit_e12.py  # E12 tests + independ
 | `e9/`, `e10/` | Leader-loss ladder (E9), attribution ladder + final general-model configuration and figures (E10). |
 | `e4/`, `paper/` | Assertiveness-sweep classification + κ(A) table (E4); the paper figure set, metrics table, captions, tuned configuration (E11). |
 | `e12/` | Pure-E7 ladder: `ladder.json` (per-A fits, evaluations, classical, grid landscape), `hypothesis.json` (nested models, trends), `extras.json` (event κ in the field, ridge scan), `fields_A*.npz`, `summary.md`, figures `fig_e12_*`. |
+| `e13/`, `e13_v1/` | Joint calibration: `prehull13.json` (reachable set), `ladder13.json` (per-(A, λ) fits), `lambda_star.json`, `final13.json`, `hypothesis13.json` (nested models, jackknife, ablations), `extras13.json` (ridge, turnover, dx), `summary13.md`, figures `fig_e13_*`; `e13_v1/` = the queue + overtaking-only version (negative result). |
 | `ev4b_staging/` | Archive of the build artifacts (patches, reference outputs, capped-run mirror). |
 
 ## Data conventions and gotchas

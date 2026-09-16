@@ -373,7 +373,7 @@ def fig_profiles(S, ladder, fields, name="fig_e12_profiles"):
     return _save(fig, name, S["out"])
 
 
-def fig_ridge(S, extras, name="fig_e12_ridge"):
+def fig_ridge(S, extras, name="fig_e12_ridge", ylabel="W1 [veh km]"):
     """W1 vs kappa_c/kappa_r per A, one line per kappa_r magnitude
     (identifiability: flat-in-magnitude = fast-equilibrium ridge)."""
     keys = [f"A{a:g}" for a in S["A_levels"]]
@@ -397,7 +397,7 @@ def fig_ridge(S, extras, name="fig_e12_ridge"):
         ax.set_title(f"A = {k[1:]}", fontsize=8)
         ax.grid(alpha=0.25)
         if i % ncol == 0:
-            ax.set_ylabel("W1 [veh km]")
+            ax.set_ylabel(ylabel)
         if i // ncol == nrow - 1:
             ax.set_xlabel(r"$\kappa_c/\kappa_r$")
     for j in range(n, nrow * ncol):
